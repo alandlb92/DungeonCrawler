@@ -13,5 +13,7 @@ UCLASS()
 class DUNGEONCRAWLER_API ADungeonCrawlerGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+		virtual void BeginPlay() override;
 };
