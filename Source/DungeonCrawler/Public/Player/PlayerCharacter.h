@@ -28,8 +28,25 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void EnableGameplayInput();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class USpringArmComponent* _springArm;
 
 private:
+	class UPlayerAnimInstance* _anim;
+	class ADGPlayerState* _state;
+
+	bool moveToMousePosition;
+	bool canAttack;
+
 	UPROPERTY()
 	class UPlayerCharacterMovementComponent* _movementComponent;
+
+	void UpdatePlayerState();
+
+	void EnableMoveToMouse();
+	void DisableMoveToMouse();
+	void ShowMouseMovementFeedBack();
+	
+	void StartRegularAttack();
+	void EndRegularAttack();
 };

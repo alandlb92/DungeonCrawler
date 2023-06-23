@@ -6,6 +6,8 @@
 #include "Player/PlayerAnimInstance.h"
 #include "AIController.h"
 #include "NavigationSystem.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Player/DGPlayerState.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -13,7 +15,6 @@ APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -21,9 +22,29 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	moveToMousePosition = false;
+	canAttack = false;
+
+	_state = Cast<ADGPlayerState>(GetPlayerState());
+	if (!_state)
+		UE_LOG(LogTemp, Error, TEXT("Error on searching for the ADGPlayerState"));
+
+	_anim = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+	if (_anim && _state)
+		_anim->OnChangeCharacterState.BindUObject(_state, &ADGPlayerState::ChangeCharacterState);
+	else
+		UE_LOG(LogTemp, Error, TEXT("Error on searching for the UPlayerAnimInstance"));
+
+
+	_springArm = FindComponentByClass<USpringArmComponent>();
+	if (!_springArm)
+		UE_LOG(LogTemp, Error, TEXT("Error on searching for the USpringArmComponent"));
+
+
+
 	_movementComponent = Cast<UPlayerCharacterMovementComponent>(GetMovementComponent());
 	if (_movementComponent) {
-		_movementComponent->Configure(Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance()));
+		_movementComponent->Configure(_anim, _springArm);
 		EnableGameplayInput();
 	}
 	else
@@ -36,6 +57,29 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	_movementComponent->CanMove = _state->GetCharacterState() != ATTACKING;
+
+	if (moveToMousePosition)
+		_movementComponent->MoveToMouseDirection();
+
+	if (_anim)
+		_anim->_attack = canAttack;
+
+	UpdatePlayerState();
+
+}
+
+
+void APlayerCharacter::UpdatePlayerState()
+{
+	if (!_state)
+		return;
+
+	if (_movementComponent->Velocity.Length() > 0 && _state->GetCharacterState() != ATTACKING)
+		_state->ChangeCharacterState(WALKING);
+	else if(_state->GetCharacterState() != ATTACKING)
+		_state->ChangeCharacterState(IDLE);
 }
 
 // Called to bind functionality to input
@@ -47,6 +91,41 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::EnableGameplayInput()
 {
+	InputComponent->BindAction("LeftClick", IE_Pressed, this, &APlayerCharacter::EnableMoveToMouse);
+	InputComponent->BindAction("LeftClick", IE_Released, this, &APlayerCharacter::DisableMoveToMouse);
 	InputComponent->BindAction("LeftClick", IE_Released, _movementComponent, &UPlayerCharacterMovementComponent::MoveToMousePosition);
+	InputComponent->BindAction("LeftClick", IE_Released, this, &APlayerCharacter::ShowMouseMovementFeedBack);
+
+	InputComponent->BindAction("RegularAttack", IE_Pressed, this, &APlayerCharacter::StartRegularAttack);
+	InputComponent->BindAction("RegularAttack", IE_Released, this, &APlayerCharacter::EndRegularAttack);
 }
+
+void APlayerCharacter::EnableMoveToMouse()
+{
+	moveToMousePosition = true;
+}
+
+void APlayerCharacter::DisableMoveToMouse()
+{
+	moveToMousePosition = false;
+}
+
+void APlayerCharacter::StartRegularAttack()
+{
+	canAttack = true;
+	UE_LOG(LogTemp, Error, TEXT("StartRegularAttack"));
+}
+
+void APlayerCharacter::EndRegularAttack()
+{
+	canAttack = false;
+	UE_LOG(LogTemp, Error, TEXT("EndRegularAttack"));
+}
+
+void APlayerCharacter::ShowMouseMovementFeedBack()
+{
+	UE_LOG(LogTemp, Error, TEXT("TODO ShowMouseMovementFeedBack"));
+}
+
+
 

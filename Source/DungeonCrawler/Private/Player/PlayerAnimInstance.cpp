@@ -3,3 +3,12 @@
 
 #include "Player/PlayerAnimInstance.h"
 
+void UPlayerAnimInstance::HitFrame()
+{
+	UE_LOG(LogTemp, Warning, TEXT("HitFrame"));
+}
+
+void UPlayerAnimInstance::ChangeCharacterState(CharacterState state)
+{
+	OnChangeCharacterState.Execute(state);
+}

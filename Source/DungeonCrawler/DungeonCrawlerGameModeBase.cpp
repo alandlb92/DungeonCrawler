@@ -14,5 +14,8 @@ void ADungeonCrawlerGameModeBase::BeginPlay()
     // Outras configurações, se necessário
     PlayerController->bEnableClickEvents = true;
     PlayerController->bEnableMouseOverEvents = true;
-    PlayerController->SetInputMode(FInputModeGameAndUI());
+    FInputModeGameAndUI inputMode = FInputModeGameAndUI();
+    inputMode.SetHideCursorDuringCapture(false);
+
+    PlayerController->SetInputMode(inputMode);
 }

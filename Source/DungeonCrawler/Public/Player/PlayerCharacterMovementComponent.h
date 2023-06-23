@@ -17,13 +17,20 @@ class DUNGEONCRAWLER_API UPlayerCharacterMovementComponent : public UCharacterMo
 private:
 		UPROPERTY()
 		class UPlayerAnimInstance* _anim;
+		UPROPERTY()
+		class USpringArmComponent* _springArm;
 
 public:
-	void Configure(UPlayerAnimInstance* anim);
+	void Configure(UPlayerAnimInstance* anim, USpringArmComponent* camera);
 	void MoveToMousePosition();
+	void MoveToMouseDirection();
+	bool CanMove;
 
 private:
 	APlayerController* _playerController;
 	FHitResult RaycastFromMouse(APlayerController* PlayerController, float RayLength = 10000.f);
-	
+	FVector2D GetMousePositionFromCenterOrigin();
+
+protected:
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };
