@@ -3,12 +3,12 @@
 
 #include "Player/PlayerCharacterMovementComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "Player/PlayerAnimInstance.h"
+#include "Base/CharacterAnimInstanceBase.h"
 #include "NavigationSystem.h"
 #include "GameFramework/SpringArmComponent.h"
 
 
-void UPlayerCharacterMovementComponent::Configure(UPlayerAnimInstance* anim, USpringArmComponent* springArm)
+void UPlayerCharacterMovementComponent::Configure(UCharacterAnimInstanceBase* anim, USpringArmComponent* springArm)
 {
 	_anim = anim;
 	_springArm = springArm;
@@ -64,6 +64,8 @@ void UPlayerCharacterMovementComponent::MoveToMouseDirection()
 void UPlayerCharacterMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (!_anim)
+		return;
 
 	if (!CanMove && Velocity.Length() > 0) {
 		StopMovementImmediately();

@@ -16,12 +16,12 @@ class DUNGEONCRAWLER_API UPlayerCharacterMovementComponent : public UCharacterMo
 
 private:
 		UPROPERTY()
-		class UPlayerAnimInstance* _anim;
+		class UCharacterAnimInstanceBase* _anim;
 		UPROPERTY()
 		class USpringArmComponent* _springArm;
 
 public:
-	void Configure(UPlayerAnimInstance* anim, USpringArmComponent* camera);
+	void Configure(UCharacterAnimInstanceBase* anim, USpringArmComponent* camera);
 	void MoveToMousePosition();
 	void MoveToMouseDirection();
 	bool CanMove;

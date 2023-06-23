@@ -32,7 +32,7 @@ public:
 	class USpringArmComponent* _springArm;
 
 private:
-	class UPlayerAnimInstance* _anim;
+	class UCharacterAnimInstanceBase* _anim;
 	class ADGPlayerState* _state;
 
 	bool moveToMousePosition;
@@ -49,4 +49,11 @@ private:
 	
 	void StartRegularAttack();
 	void EndRegularAttack();
+
+
+	UPROPERTY()
+	class UDamageComponent* _damageComp;
+
+	UPROPERTY()
+	class UAttackComponent* _attackComp;
 };

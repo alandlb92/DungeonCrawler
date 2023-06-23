@@ -3,11 +3,13 @@
 
 #include "Player/PlayerCharacter.h"
 #include "Player/PlayerCharacterMovementComponent.h"
-#include "Player/PlayerAnimInstance.h"
+#include "Base/CharacterAnimInstanceBase.h"
 #include "AIController.h"
 #include "NavigationSystem.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Player/DGPlayerState.h"
+#include "Components/AttackComponent.h"
+#include "Components/DamageComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -29,11 +31,11 @@ void APlayerCharacter::BeginPlay()
 	if (!_state)
 		UE_LOG(LogTemp, Error, TEXT("Error on searching for the ADGPlayerState"));
 
-	_anim = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+	_anim = Cast<UCharacterAnimInstanceBase>(GetMesh()->GetAnimInstance());
 	if (_anim && _state)
 		_anim->OnChangeCharacterState.BindUObject(_state, &ADGPlayerState::ChangeCharacterState);
 	else
-		UE_LOG(LogTemp, Error, TEXT("Error on searching for the UPlayerAnimInstance"));
+		UE_LOG(LogTemp, Error, TEXT("Error on searching for the UCharacterAnimInstanceBase"));
 
 
 	_springArm = FindComponentByClass<USpringArmComponent>();
@@ -41,6 +43,20 @@ void APlayerCharacter::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Error on searching for the USpringArmComponent"));
 
 
+	_damageComp = FindComponentByClass<UDamageComponent>();
+	if (!_damageComp)
+		UE_LOG(LogTemp, Error, TEXT("Error on searching for the UDamageComponent"));
+
+
+	_attackComp = FindComponentByClass<UAttackComponent>();
+	if (!_attackComp)
+		UE_LOG(LogTemp, Error, TEXT("Error on searching for the UAttackComponent"));
+
+	if (_attackComp && _anim)
+	{
+		_anim->OnHitFrameStart.BindUObject(_attackComp, &UAttackComponent::EnableHitBox);
+		_anim->OnHitFrameEnd.BindUObject(_attackComp, &UAttackComponent::DisableHitBox);
+	}
 
 	_movementComponent = Cast<UPlayerCharacterMovementComponent>(GetMovementComponent());
 	if (_movementComponent) {
@@ -67,7 +83,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 		_anim->_attack = canAttack;
 
 	UpdatePlayerState();
-
 }
 
 
@@ -86,7 +101,6 @@ void APlayerCharacter::UpdatePlayerState()
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void APlayerCharacter::EnableGameplayInput()
