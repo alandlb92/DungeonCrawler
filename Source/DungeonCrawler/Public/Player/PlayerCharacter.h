@@ -34,6 +34,7 @@ public:
 private:
 	class UCharacterAnimInstanceBase* _anim;
 	class ADGPlayerState* _state;
+	APlayerController* _playerController;
 
 	bool moveToMousePosition;
 	bool canAttack;
@@ -43,6 +44,7 @@ private:
 
 	void UpdatePlayerState();
 
+	void ClickInteraction();
 	void EnableMoveToMouse();
 	void DisableMoveToMouse();
 	void ShowMouseMovementFeedBack();

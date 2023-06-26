@@ -10,6 +10,7 @@
 #include "Player/DGPlayerState.h"
 #include "Components/AttackComponent.h"
 #include "Components/DamageComponent.h"
+#include "Helpers/MouseHelper.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -26,6 +27,10 @@ void APlayerCharacter::BeginPlay()
 
 	moveToMousePosition = false;
 	canAttack = false;
+
+	_playerController = GetWorld()->GetFirstPlayerController();
+	if (!_playerController)
+		UE_LOG(LogTemp, Error, TEXT("Error on searching for the PlayerController"));
 
 	_state = Cast<ADGPlayerState>(GetPlayerState());
 	if (!_state)
@@ -60,7 +65,7 @@ void APlayerCharacter::BeginPlay()
 
 	_movementComponent = Cast<UPlayerCharacterMovementComponent>(GetMovementComponent());
 	if (_movementComponent) {
-		_movementComponent->Configure(_anim, _springArm);
+		_movementComponent->Configure(_anim, _springArm, _playerController);
 		EnableGameplayInput();
 	}
 	else
@@ -93,7 +98,7 @@ void APlayerCharacter::UpdatePlayerState()
 
 	if (_movementComponent->Velocity.Length() > 0 && _state->GetCharacterState() != ATTACKING)
 		_state->ChangeCharacterState(WALKING);
-	else if(_state->GetCharacterState() != ATTACKING)
+	else if (_state->GetCharacterState() != ATTACKING)
 		_state->ChangeCharacterState(IDLE);
 }
 
@@ -107,11 +112,20 @@ void APlayerCharacter::EnableGameplayInput()
 {
 	InputComponent->BindAction("LeftClick", IE_Pressed, this, &APlayerCharacter::EnableMoveToMouse);
 	InputComponent->BindAction("LeftClick", IE_Released, this, &APlayerCharacter::DisableMoveToMouse);
-	InputComponent->BindAction("LeftClick", IE_Released, _movementComponent, &UPlayerCharacterMovementComponent::MoveToMousePosition);
+	InputComponent->BindAction("LeftClick", IE_Released, this, &APlayerCharacter::ClickInteraction);
 	InputComponent->BindAction("LeftClick", IE_Released, this, &APlayerCharacter::ShowMouseMovementFeedBack);
 
 	InputComponent->BindAction("RegularAttack", IE_Pressed, this, &APlayerCharacter::StartRegularAttack);
 	InputComponent->BindAction("RegularAttack", IE_Released, this, &APlayerCharacter::EndRegularAttack);
+}
+
+void APlayerCharacter::ClickInteraction()
+{
+	FHitResult hit = MouseHelper::RaycastFromMouse(_playerController);
+	if (hit.HasValidHitObjectHandle())
+		_movementComponent->MoveToPosition(hit.ImpactPoint);
+	else
+		UE_LOG(LogTemp, Error, TEXT("hit.HasValidHitObjectHandle()"));
 }
 
 void APlayerCharacter::EnableMoveToMouse()

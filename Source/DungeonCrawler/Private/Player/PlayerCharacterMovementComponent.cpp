@@ -6,33 +6,23 @@
 #include "Base/CharacterAnimInstanceBase.h"
 #include "NavigationSystem.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Helpers/MouseHelper.h"
 
 
-void UPlayerCharacterMovementComponent::Configure(UCharacterAnimInstanceBase* anim, USpringArmComponent* springArm)
+void UPlayerCharacterMovementComponent::Configure(UCharacterAnimInstanceBase* anim, USpringArmComponent* springArm, APlayerController* playerController)
 {
 	_anim = anim;
 	_springArm = springArm;
-	_playerController = GetWorld()->GetFirstPlayerController();
+	_playerController = playerController;
 }
 
-void UPlayerCharacterMovementComponent::MoveToMousePosition()
+void UPlayerCharacterMovementComponent::MoveToPosition(FVector destination)
 {
 	if (!CanMove)
 		return;
 
-	UE_LOG(LogTemp, Warning, TEXT("MoveToMousePosition"));
-	if (_playerController)
-	{
-		FHitResult hit = RaycastFromMouse(_playerController);
-
-		if (hit.HasValidHitObjectHandle())
-		{
-			FVector destination = hit.ImpactPoint;
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(_playerController, destination);
-		}
-		else
-			UE_LOG(LogTemp, Error, TEXT("hit.HasValidHitObjectHandle()"));
-	}
+	if (_playerController)	
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(_playerController, destination);	
 	else
 		UE_LOG(LogTemp, Error, TEXT("_playerController is null"));
 }
@@ -42,7 +32,7 @@ void UPlayerCharacterMovementComponent::MoveToMouseDirection()
 	if (!CanMove)
 		return;
 
-	FVector2D inputToFixRotation = GetMousePositionFromCenterOrigin();
+	FVector2D inputToFixRotation = MouseHelper::GetMousePositionFromCenterOrigin();
 	float AngleInRadians = FMath::DegreesToRadians(90.0f);
 	float CosTheta = FMath::Cos(AngleInRadians);
 	float SinTheta = FMath::Sin(AngleInRadians);
@@ -58,7 +48,6 @@ void UPlayerCharacterMovementComponent::MoveToMouseDirection()
 
 	AddInputVector(input);
 }
-
 
 
 void UPlayerCharacterMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -77,36 +66,3 @@ void UPlayerCharacterMovementComponent::TickComponent(float DeltaTime, ELevelTic
 		_anim->_velocityScale = 0;
 }
 
-FHitResult UPlayerCharacterMovementComponent::RaycastFromMouse(APlayerController* PlayerController, float RayLength)
-{
-
-	FVector2D MousePosition;
-	PlayerController->GetMousePosition(MousePosition.X, MousePosition.Y);
-
-	FVector WorldLocation, WorldDirection;
-	PlayerController->DeprojectScreenPositionToWorld(MousePosition.X, MousePosition.Y, WorldLocation, WorldDirection);
-
-	FHitResult HitResult;
-	FCollisionQueryParams TraceParams(FName(TEXT("MouseRaycast")), true, PlayerController);
-	PlayerController->GetWorld()->LineTraceSingleByChannel(HitResult, WorldLocation, WorldLocation + (WorldDirection * RayLength), ECC_Visibility, TraceParams);
-
-	return HitResult;
-}
-
-FVector2D UPlayerCharacterMovementComponent::GetMousePositionFromCenterOrigin()
-{
-
-	UGameViewportClient* ViewportClient = GEngine->GameViewport;
-	FVector2D ViewportSize;
-	FVector2D MousePosition;
-
-	if (ViewportClient != nullptr)
-	{
-		ViewportClient->GetViewportSize(ViewportSize);
-		ViewportClient->GetMousePosition(MousePosition);
-	}
-
-	FVector2D MouseOffset = MousePosition - ViewportSize / 2;
-
-	return MouseOffset;
-}

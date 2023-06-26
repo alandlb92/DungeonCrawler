@@ -21,15 +21,13 @@ private:
 		class USpringArmComponent* _springArm;
 
 public:
-	void Configure(UCharacterAnimInstanceBase* anim, USpringArmComponent* camera);
-	void MoveToMousePosition();
+	void Configure(UCharacterAnimInstanceBase* anim, USpringArmComponent* camera, APlayerController* playerController);
+	void MoveToPosition(FVector destination);
 	void MoveToMouseDirection();
 	bool CanMove;
 
 private:
 	APlayerController* _playerController;
-	FHitResult RaycastFromMouse(APlayerController* PlayerController, float RayLength = 10000.f);
-	FVector2D GetMousePositionFromCenterOrigin();
 
 protected:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
