@@ -27,6 +27,18 @@ void UPlayerCharacterMovementComponent::MoveToPosition(FVector destination)
 		UE_LOG(LogTemp, Error, TEXT("_playerController is null"));
 }
 
+void UPlayerCharacterMovementComponent::MoveToActor(AActor* actor)
+{
+	if (!CanMove)
+		return;
+
+	UE_LOG(LogTemp, Warning, TEXT("MoveToActor"));
+	if (_playerController)
+		UAIBlueprintHelperLibrary::SimpleMoveToActor(_playerController, actor);
+	else
+		UE_LOG(LogTemp, Error, TEXT("_playerController is null"));
+}
+
 void UPlayerCharacterMovementComponent::MoveToMouseDirection()
 {
 	if (!CanMove)

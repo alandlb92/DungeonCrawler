@@ -11,6 +11,8 @@
 #include "Components/AttackComponent.h"
 #include "Components/DamageComponent.h"
 #include "Helpers/MouseHelper.h"
+#include "Components/InteractableComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -26,7 +28,9 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	moveToMousePosition = false;
-	canAttack = false;
+	IsLeftMouseKeyDown = false;
+	IsSpaceBarDown = false;
+	IsLeftMouseKeyDownAndOverEnemyToAttack = false;	
 
 	_playerController = GetWorld()->GetFirstPlayerController();
 	if (!_playerController)
@@ -85,11 +89,46 @@ void APlayerCharacter::Tick(float DeltaTime)
 		_movementComponent->MoveToMouseDirection();
 
 	if (_anim)
-		_anim->_attack = canAttack;
+		_anim->_attack = IsSpaceBarDown || IsLeftMouseKeyDownAndOverEnemyToAttack;
 
 	UpdatePlayerState();
+	MouseIsDownInteractionLoop();
+	WaitDistanceAndInteract();
 }
 
+void APlayerCharacter::MouseIsDownInteractionLoop()
+{
+	if (IsLeftMouseKeyDown)
+	{
+		FHitResult hit = MouseHelper::RaycastFromMouse(_playerController);
+		if (hit.HasValidHitObjectHandle())
+		{
+			AActor* actorHited = hit.GetActor();
+
+			if (actorHited && actorHited->GetComponentByClass<UInteractableComponent>())
+			{
+				if (FVector::Distance(actorHited->GetActorLocation(), GetActorLocation()) <= _distanceToInteract)
+				{
+					LookAt(actorHited);
+					IsLeftMouseKeyDownAndOverEnemyToAttack = true;
+				}
+				else
+				{
+					IsLeftMouseKeyDownAndOverEnemyToAttack = false;
+					_movementComponent->MoveToMouseDirection();
+				}
+			}
+			else
+			{
+				_movementComponent->MoveToMouseDirection();
+			}
+		}
+	}
+	else
+	{
+		IsLeftMouseKeyDownAndOverEnemyToAttack = false;
+	}
+}
 
 void APlayerCharacter::UpdatePlayerState()
 {
@@ -102,6 +141,7 @@ void APlayerCharacter::UpdatePlayerState()
 		_state->ChangeCharacterState(IDLE);
 }
 
+
 // Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -110,20 +150,53 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::EnableGameplayInput()
 {
-	InputComponent->BindAction("LeftClick", IE_Pressed, this, &APlayerCharacter::EnableMoveToMouse);
-	InputComponent->BindAction("LeftClick", IE_Released, this, &APlayerCharacter::DisableMoveToMouse);
-	InputComponent->BindAction("LeftClick", IE_Released, this, &APlayerCharacter::ClickInteraction);
-	InputComponent->BindAction("LeftClick", IE_Released, this, &APlayerCharacter::ShowMouseMovementFeedBack);
+	InputComponent->BindAction("LeftClick", IE_Pressed, this, &APlayerCharacter::LeftMouseKeyDown);
+	InputComponent->BindAction("LeftClick", IE_Released, this, &APlayerCharacter::LeftMouseKeyUp);
 
-	InputComponent->BindAction("RegularAttack", IE_Pressed, this, &APlayerCharacter::StartRegularAttack);
-	InputComponent->BindAction("RegularAttack", IE_Released, this, &APlayerCharacter::EndRegularAttack);
+	InputComponent->BindAction("RegularAttack", IE_Pressed, this, &APlayerCharacter::SpaceBarKeyDown);
+	InputComponent->BindAction("RegularAttack", IE_Released, this, &APlayerCharacter::SpaceBarKeyUp);
+}
+
+void APlayerCharacter::LeftMouseKeyDown()
+{
+	IsLeftMouseKeyDown = true;
+	FTimerHandle UnusedHandle;
+	GetWorldTimerManager().SetTimer(UnusedHandle, [this]()
+	{
+		if (!IsLeftMouseKeyDown)
+			ClickInteraction();
+	}, .1f, false);
+}
+
+void APlayerCharacter::LeftMouseKeyUp()
+{
+	IsLeftMouseKeyDown = false;
+}
+
+void APlayerCharacter::SpaceBarKeyDown()
+{
+	IsSpaceBarDown = true;
+}
+
+void APlayerCharacter::SpaceBarKeyUp()
+{
+	IsSpaceBarDown = false;
 }
 
 void APlayerCharacter::ClickInteraction()
 {
 	FHitResult hit = MouseHelper::RaycastFromMouse(_playerController);
 	if (hit.HasValidHitObjectHandle())
-		_movementComponent->MoveToPosition(hit.ImpactPoint);
+	{
+		if (hit.GetActor()->GetComponentByClass<UInteractableComponent>()) {
+			_actorToInteract = hit.GetActor();
+			_movementComponent->MoveToActor(_actorToInteract);
+		}
+		else {
+			_movementComponent->MoveToPosition(hit.ImpactPoint);
+			ShowMouseMovementFeedBack();
+		}
+	}
 	else
 		UE_LOG(LogTemp, Error, TEXT("hit.HasValidHitObjectHandle()"));
 }
@@ -138,16 +211,23 @@ void APlayerCharacter::DisableMoveToMouse()
 	moveToMousePosition = false;
 }
 
-void APlayerCharacter::StartRegularAttack()
+void APlayerCharacter::WaitDistanceAndInteract()
 {
-	canAttack = true;
-	UE_LOG(LogTemp, Error, TEXT("StartRegularAttack"));
+	if (_actorToInteract)
+	{
+		if (FVector::Distance(_actorToInteract->GetActorLocation(), GetActorLocation()) <= _distanceToInteract) {
+			_movementComponent->StopMovementImmediately();
+			LookAt(_actorToInteract);
+			IsLeftMouseKeyDownAndOverEnemyToAttack = true;
+			_actorToInteract = nullptr;
+		}
+	}
 }
 
-void APlayerCharacter::EndRegularAttack()
+void APlayerCharacter::LookAt(AActor* toLook)
 {
-	canAttack = false;
-	UE_LOG(LogTemp, Error, TEXT("EndRegularAttack"));
+	FRotator lookAtRotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), toLook->GetActorLocation());
+	SetActorRotation(lookAtRotator.Quaternion());
 }
 
 void APlayerCharacter::ShowMouseMovementFeedBack()

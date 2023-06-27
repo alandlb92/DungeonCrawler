@@ -46,14 +46,12 @@ void UAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UAttackComponent::EnableHitBox()
 {
-	UE_LOG(LogTemp, Warning, TEXT("EnableHitBox"));
 	if (_boxCollision)
 		_boxCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 void UAttackComponent::DisableHitBox()
 {
-	UE_LOG(LogTemp, Warning, TEXT("DisableHitBox"));
 	if (_boxCollision)
 		_boxCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

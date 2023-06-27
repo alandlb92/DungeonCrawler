@@ -23,6 +23,7 @@ private:
 public:
 	void Configure(UCharacterAnimInstanceBase* anim, USpringArmComponent* camera, APlayerController* playerController);
 	void MoveToPosition(FVector destination);
+	void MoveToActor(AActor* actor);
 	void MoveToMouseDirection();
 	bool CanMove;
 

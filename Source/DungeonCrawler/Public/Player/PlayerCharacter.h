@@ -31,26 +31,43 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USpringArmComponent* _springArm;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float _distanceToInteract = 100;
+
 private:
 	class UCharacterAnimInstanceBase* _anim;
 	class ADGPlayerState* _state;
 	APlayerController* _playerController;
+	AActor* _actorToInteract;
 
+	bool IsLeftMouseKeyDown;
+	bool IsSpaceBarDown;
 	bool moveToMousePosition;
-	bool canAttack;
+
+	bool IsLeftMouseKeyDownAndOverEnemyToAttack;
 
 	UPROPERTY()
 	class UPlayerCharacterMovementComponent* _movementComponent;
 
 	void UpdatePlayerState();
 
+	void LeftMouseKeyDown();
+	void LeftMouseKeyUp();
+
+	void SpaceBarKeyDown();
+	void SpaceBarKeyUp();
+
 	void ClickInteraction();
-	void EnableMoveToMouse();
+	void MouseIsDownInteractionLoop();
+
+	void EnableMoveToMouse();	
 	void DisableMoveToMouse();
-	void ShowMouseMovementFeedBack();
-	
-	void StartRegularAttack();
-	void EndRegularAttack();
+
+
+
+	void ShowMouseMovementFeedBack();	
+	void WaitDistanceAndInteract();
+	void LookAt(AActor* toLook);
 
 
 	UPROPERTY()
