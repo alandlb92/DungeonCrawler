@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Data/AttributesData.h"
+#include "Base/CharacterBase.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
-class DUNGEONCRAWLER_API APlayerCharacter : public ACharacter
+class DUNGEONCRAWLER_API APlayerCharacter : public ACharacterBase
 {
 	GENERATED_BODY()
 
@@ -31,13 +33,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USpringArmComponent* _springArm;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float _distanceToInteract = 100;
-
 private:
-	class UCharacterAnimInstanceBase* _anim;
+
+	UPROPERTY()
 	class ADGPlayerState* _state;
+	UPROPERTY()
 	APlayerController* _playerController;
+	UPROPERTY()
 	AActor* _actorToInteract;
 
 	bool IsLeftMouseKeyDown;
@@ -48,31 +50,15 @@ private:
 
 	UPROPERTY()
 	class UPlayerCharacterMovementComponent* _movementComponent;
-
 	void UpdatePlayerState();
-
 	void LeftMouseKeyDown();
 	void LeftMouseKeyUp();
-
 	void SpaceBarKeyDown();
 	void SpaceBarKeyUp();
-
 	void ClickInteraction();
 	void MouseIsDownInteractionLoop();
-
 	void EnableMoveToMouse();	
 	void DisableMoveToMouse();
-
-
-
 	void ShowMouseMovementFeedBack();	
 	void WaitDistanceAndInteract();
-	void LookAt(AActor* toLook);
-
-
-	UPROPERTY()
-	class UDamageComponent* _damageComp;
-
-	UPROPERTY()
-	class UAttackComponent* _attackComp;
 };

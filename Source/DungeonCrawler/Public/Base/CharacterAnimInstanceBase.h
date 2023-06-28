@@ -24,15 +24,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
 	float _velocityScale;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
-	bool _attack;
+	bool _attack;	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
+	bool _die;
+
 	
 	UFUNCTION(BlueprintCallable)
 	void HitFrameStart();
 	UFUNCTION(BlueprintCallable)
 	void HitFrameEnd();
-	
-
-
 	UFUNCTION(BlueprintCallable)
 	void ChangeCharacterState(CharacterState state);
 	

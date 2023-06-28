@@ -9,12 +9,11 @@
 
 
 UENUM(BlueprintType)
-enum CharacterState
+enum CharacterState : uint8
 {
 	IDLE UMETA(DisplayName = "IDLE"),
 	WALKING UMETA(DisplayName = "Walking"),
 	ATTACKING UMETA(DisplayName = "Attacking")
-
 };
 
 UCLASS()

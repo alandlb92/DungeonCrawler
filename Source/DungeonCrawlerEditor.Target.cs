@@ -10,6 +10,6 @@ public class DungeonCrawlerEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
-		ExtraModuleNames.Add("DungeonCrawler");
+		ExtraModuleNames.AddRange(new string[] { "DungeonCrawler", "DungeonCrawlerEditor" });
 	}
 }

@@ -12,6 +12,11 @@
 				"Engine",
 				"AIModule"
 			]
+		},
+		{
+			"Name": "DungeonCrawlerEditor",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit"
 		}
 	],
 	"Plugins": [

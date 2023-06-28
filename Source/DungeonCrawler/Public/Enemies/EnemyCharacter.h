@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Base/CharacterBase.h"
 #include "EnemyCharacter.generated.h"
 
 UCLASS()
-class DUNGEONCRAWLER_API AEnemyCharacter : public ACharacter
+class DUNGEONCRAWLER_API AEnemyCharacter : public ACharacterBase
 {
 	GENERATED_BODY()
 
@@ -26,6 +27,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION()
-	void OnOverlapBegin(class AActor* OverlappedActor, class AActor* OtherActor);
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "AI")
+	float _distanceToStartChasing = 500;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
+	class UBehaviorTree* _behaviourTree;
 };

@@ -2,13 +2,13 @@
 
 using UnrealBuildTool;
 
-public class DungeonCrawler : ModuleRules
+public class DungeonCrawlerEditor : ModuleRules
 {
-	public DungeonCrawler(ReadOnlyTargetRules Target) : base(Target)
+	public DungeonCrawlerEditor(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule", "GameplayTasks" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule", "GameplayTasks", "DungeonCrawler" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

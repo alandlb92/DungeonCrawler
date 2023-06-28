@@ -3,13 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/AttributesData.h"
 
 /**
  * 
  */
+
+
 class DUNGEONCRAWLER_API RPGCalculatorHelper
 {
 public:
-	RPGCalculatorHelper();
-	~RPGCalculatorHelper();
+	static float CalculateMaxLife(UAttributesData* _attributes);
+	static float CalculateDamage(UAttributesData* _attributesAttacking, UAttributesData* _attributesTaking);
 };

@@ -14,8 +14,7 @@ AEnemyCharacter::AEnemyCharacter()
 // Called when the game starts or when spawned
 void AEnemyCharacter::BeginPlay()
 {
-	Super::BeginPlay();
-	
+	Super::BeginPlay();	
 }
 
 // Called every frame
@@ -30,10 +29,5 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-}
-
-void AEnemyCharacter::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Overlap Begin"));
 }
 

@@ -13,6 +13,11 @@ UDamageComponent::UDamageComponent()
 	// ...
 }
 
+void UDamageComponent::Configure(UAttributesData* myAttributes, CharacterStats* myStats)
+{
+	_myAttributes = myAttributes;
+	_myStats = myStats;
+}
 
 // Called when the game starts
 void UDamageComponent::BeginPlay()
@@ -28,8 +33,8 @@ void UDamageComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UDamageComponent::TakeDamage(float powerHit)
+void UDamageComponent::TakeDamage(UAttributesData* otherAttributes)
 {
-	UE_LOG(LogTemp, Error, TEXT("TODO calculate CA and apply damage"), *GetOwner()->GetName());
+	_myStats->TakeDamage(_myAttributes, otherAttributes);
 }
 

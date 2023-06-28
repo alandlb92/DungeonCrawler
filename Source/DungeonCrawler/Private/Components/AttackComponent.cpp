@@ -11,8 +11,12 @@ UAttackComponent::UAttackComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
+}
 
-	// ...
+void UAttackComponent::Configure(UAttributesData* myAttributes, CharacterStats* myStats)
+{
+	_myAttributes = myAttributes;
+	_myStats = myStats;
 }
 
 
@@ -30,9 +34,7 @@ void UAttackComponent::BeginPlay()
 	{
 		_boxCollision->OnComponentBeginOverlap.AddDynamic(this, &UAttackComponent::OnOverlapBegin);
 		DisableHitBox();
-	}
-	// ...
-	
+	}	
 }
 
 
@@ -40,8 +42,6 @@ void UAttackComponent::BeginPlay()
 void UAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
 void UAttackComponent::EnableHitBox()
@@ -62,11 +62,9 @@ void UAttackComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 	if (GetOwner() == OtherActor)
 		return;
 
-	UE_LOG(LogTemp, Error, TEXT("TODO calculate damage"), *GetOwner()->GetName());
-
 	UDamageComponent* damageComp = OtherActor->GetComponentByClass<UDamageComponent>();
 	if (damageComp)
-		damageComp->TakeDamage(10);
+		damageComp->TakeDamage(_myAttributes);
 }
 
 
