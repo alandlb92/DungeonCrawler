@@ -35,6 +35,6 @@ void UDamageComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UDamageComponent::TakeDamage(UAttributesData* otherAttributes)
 {
-	_myStats->TakeDamage(_myAttributes, otherAttributes);
+	_myStats->TakeDamage(otherAttributes, _myAttributes);
 }
 

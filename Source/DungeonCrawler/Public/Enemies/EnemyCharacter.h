@@ -49,5 +49,8 @@ public:
 	CharacterState characterState;
 
 private:
-	void ChangePlayerState(CharacterState state);
+	AActor* _hero;
+
+	void ChangeCharacterState(CharacterState state);
+	void AdjustRotation();
 };

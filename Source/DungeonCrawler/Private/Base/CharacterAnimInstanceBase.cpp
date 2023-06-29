@@ -23,6 +23,11 @@ void UCharacterAnimInstanceBase::SecondaryHitFrameEnd()
 	OnSecondaryHitFrameEnd.ExecuteIfBound();
 }
 
+void UCharacterAnimInstanceBase::AdjustRotation()
+{
+	OnAdjustRotationBetweenAnimEvent.ExecuteIfBound();
+}
+
 void UCharacterAnimInstanceBase::ChangeCharacterState(CharacterState state)
 {
 	OnChangeCharacterState.Execute(state);

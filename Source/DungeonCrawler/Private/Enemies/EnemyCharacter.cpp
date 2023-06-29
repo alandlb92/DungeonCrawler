@@ -16,8 +16,15 @@ AEnemyCharacter::AEnemyCharacter()
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	if (_anim)
-		_anim->OnChangeCharacterState.BindUObject(this, &AEnemyCharacter::ChangePlayerState);
+
+	_hero = GetWorld()->GetFirstPlayerController()->GetCharacter();
+	if (!_hero)
+		UE_LOG(LogTemp, Error, TEXT("hero NOT FOUND"));
+
+	if (_anim) {
+		_anim->OnChangeCharacterState.BindUObject(this, &AEnemyCharacter::ChangeCharacterState);
+		_anim->OnAdjustRotationBetweenAnimEvent.BindUObject(this, &AEnemyCharacter::AdjustRotation);
+	}
 }
 
 // Called every frame
@@ -37,8 +44,13 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 }
 
-void AEnemyCharacter::ChangePlayerState(CharacterState state)
+void AEnemyCharacter::ChangeCharacterState(CharacterState state)
 {
 	characterState = state;
+}
+
+void AEnemyCharacter::AdjustRotation()
+{
+	LookAt(_hero);
 }
 

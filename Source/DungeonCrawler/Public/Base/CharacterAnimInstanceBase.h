@@ -9,6 +9,7 @@
 
 DECLARE_DELEGATE_OneParam(ChangeCharacterStateEvent, CharacterState);
 DECLARE_DELEGATE(HitFrameEvent);
+DECLARE_DELEGATE(AdjustRotationEvent);
 /**
  *
  */
@@ -23,26 +24,29 @@ public:
 	HitFrameEvent OnHitFrameEnd;
 	HitFrameEvent OnSecondaryHitFrameStart;
 	HitFrameEvent OnSecondaryHitFrameEnd;
+	AdjustRotationEvent OnAdjustRotationBetweenAnimEvent;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
 	float _velocityScale;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
-	bool _attack;	
+	bool _attack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
 	bool _die;
 
-	
 	UFUNCTION(BlueprintCallable)
 	void HitFrameStart();
 	UFUNCTION(BlueprintCallable)
 	void HitFrameEnd();
-
 
 	UFUNCTION(BlueprintCallable)
 	void SecondaryHitFrameStart();
 	UFUNCTION(BlueprintCallable)
 	void SecondaryHitFrameEnd();
 
+
+	UFUNCTION(BlueprintCallable)
+	void AdjustRotation();
+
 	UFUNCTION(BlueprintCallable)
 	void ChangeCharacterState(CharacterState state);
-	
 };

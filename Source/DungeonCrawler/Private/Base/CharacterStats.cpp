@@ -16,12 +16,9 @@ CharacterStats::CharacterStats(UAttributesData* _attributes, DieEvent onDie)
 
 void CharacterStats::TakeDamage(UAttributesData* _atributesAttacking, UAttributesData* _atributesTaking)
 {
-
 	float damage = RPGCalculatorHelper::CalculateDamage(_atributesAttacking, _atributesTaking);
-	UE_LOG(LogTemp, Warning, TEXT("Attack dammage: %f"), damage);
 
 	_currentLife -= damage;
-	UE_LOG(LogTemp, Warning, TEXT("CurrentLife: %f"), _currentLife);
 	if (_currentLife <= 0)
 		_onDie.ExecuteIfBound();
 }

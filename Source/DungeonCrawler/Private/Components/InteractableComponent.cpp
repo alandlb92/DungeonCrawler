@@ -21,10 +21,6 @@ void UInteractableComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-
-	UE_LOG(LogTemp, Warning, TEXT("UInteractableComponent::BeginPlay"));
-	// ...
 	_mesh = GetOwner()->GetComponentByClass<UMeshComponent>();
 	if (!_mesh)
 		UE_LOG(LogTemp, Error, TEXT("Error on searching for the UMeshComponent"));
@@ -49,14 +45,12 @@ void UInteractableComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UInteractableComponent::BeginCursorOver(UPrimitiveComponent* TouchedActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("UInteractableComponent::BeginCursorOver"));
 	if (_mesh)
 		_mesh->SetRenderCustomDepth(true);
 }
 
 void UInteractableComponent::EndCursorOver(UPrimitiveComponent* TouchedActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("UInteractableComponent::EndCursorOver"));
 	if (_mesh)
 		_mesh->SetRenderCustomDepth(false);
 }
