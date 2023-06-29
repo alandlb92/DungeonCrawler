@@ -45,9 +45,9 @@ void APlayerCharacter::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Error on searching for the USpringArmComponent"));
 	
 
-	_movementComponent = Cast<UPlayerCharacterMovementComponent>(GetMovementComponent());
-	if (_movementComponent) {
-		_movementComponent->Configure(_anim, _springArm, _playerController);
+	_playerMovementComponent = Cast<UPlayerCharacterMovementComponent>(GetMovementComponent());
+	if (_playerMovementComponent) {
+		_playerMovementComponent->Configure(_springArm, _playerController);
 		EnableGameplayInput();
 	}
 	else
@@ -61,10 +61,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	_movementComponent->CanMove = _state->GetCharacterState() != ATTACKING;
+	_playerMovementComponent->CanMove = _state->GetCharacterState() != ATTACKING;
 
 	if (moveToMousePosition)
-		_movementComponent->MoveToMouseDirection();
+		_playerMovementComponent->MoveToMouseDirection();
 
 	if (_anim)
 		_anim->_attack = IsSpaceBarDown || IsLeftMouseKeyDownAndOverEnemyToAttack;
@@ -93,12 +93,12 @@ void APlayerCharacter::MouseIsDownInteractionLoop()
 				else
 				{
 					IsLeftMouseKeyDownAndOverEnemyToAttack = false;
-					_movementComponent->MoveToMouseDirection();
+					_playerMovementComponent->MoveToMouseDirection();
 				}
 			}
 			else
 			{
-				_movementComponent->MoveToMouseDirection();
+				_playerMovementComponent->MoveToMouseDirection();
 			}
 		}
 	}
@@ -113,7 +113,7 @@ void APlayerCharacter::UpdatePlayerState()
 	if (!_state)
 		return;
 
-	if (_movementComponent->Velocity.Length() > 0 && _state->GetCharacterState() != ATTACKING)
+	if (_playerMovementComponent->Velocity.Length() > 0 && _state->GetCharacterState() != ATTACKING)
 		_state->ChangeCharacterState(WALKING);
 	else if (_state->GetCharacterState() != ATTACKING)
 		_state->ChangeCharacterState(IDLE);
@@ -168,10 +168,10 @@ void APlayerCharacter::ClickInteraction()
 	{
 		if (hit.GetActor()->GetComponentByClass<UInteractableComponent>()) {
 			_actorToInteract = hit.GetActor();
-			_movementComponent->MoveToActor(_actorToInteract);
+			_playerMovementComponent->MoveToActor(_actorToInteract);
 		}
 		else {
-			_movementComponent->MoveToPosition(hit.ImpactPoint);
+			_playerMovementComponent->MoveToPosition(hit.ImpactPoint);
 			ShowMouseMovementFeedBack();
 		}
 	}
@@ -194,7 +194,7 @@ void APlayerCharacter::WaitDistanceAndInteract()
 	if (_actorToInteract)
 	{
 		if (FVector::Distance(_actorToInteract->GetActorLocation(), GetActorLocation()) <= _distanceToInteract) {
-			_movementComponent->StopMovementImmediately();
+			_playerMovementComponent->StopMovementImmediately();
 			LookAt(_actorToInteract);
 			IsLeftMouseKeyDownAndOverEnemyToAttack = true;
 			_actorToInteract = nullptr;

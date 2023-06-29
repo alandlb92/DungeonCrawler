@@ -2,11 +2,12 @@
 
 
 #include "Enemies/EnemyCharacter.h"
+#include "Base/CharacterAnimInstanceBase.h"
 
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
@@ -14,13 +15,18 @@ AEnemyCharacter::AEnemyCharacter()
 // Called when the game starts or when spawned
 void AEnemyCharacter::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
+	if (_anim)
+		_anim->OnChangeCharacterState.BindUObject(this, &AEnemyCharacter::ChangePlayerState);
 }
 
 // Called every frame
 void AEnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (_anim) {
+		_anim->_attack = _attack;
+	}
 
 }
 
@@ -29,5 +35,10 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AEnemyCharacter::ChangePlayerState(CharacterState state)
+{
+	characterState = state;
 }
 

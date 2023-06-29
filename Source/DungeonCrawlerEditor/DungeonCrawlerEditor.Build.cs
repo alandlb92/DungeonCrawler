@@ -8,7 +8,7 @@ public class DungeonCrawlerEditor : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule", "GameplayTasks", "DungeonCrawler" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UnrealEd", "AIModule", "GameplayTasks", "DungeonCrawler" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

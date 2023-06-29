@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
+#include "Enemies/EnemyCharacter.h"
 #include "BTTask_SearchForHero.generated.h"
 
 
@@ -18,12 +19,4 @@ public:
 private:
 	class AEnemyCharacter* _characterOwner;
 	class AActor* _target;
-};
-
-UENUM(BlueprintType)
-enum EnemyAIState : uint8
-{
-	WAITINGFORAPPROACH UMETA(DisplayName = "WAITINGFORAPPROACH"),
-	CHASING UMETA(DisplayName = "CHASING"),
-	ATTACKING UMETA(DisplayName = "ATTACKING")
 };

@@ -25,6 +25,11 @@ void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	_movementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
+	if (!_movementComponent)
+		UE_LOG(LogTemp, Error, TEXT("Error on searching for the MovementComponent"));
+
+
 	DieEvent onDie;
 	onDie.BindUObject(this, &ACharacterBase::OnDie);
 	_stats = new CharacterStats(_attributes, onDie);	
@@ -53,6 +58,9 @@ void ACharacterBase::BeginPlay()
 	{
 		_anim->OnHitFrameStart.BindUObject(_attackComp, &UAttackComponent::EnableHitBox);
 		_anim->OnHitFrameEnd.BindUObject(_attackComp, &UAttackComponent::DisableHitBox);
+
+		_anim->OnSecondaryHitFrameStart.BindUObject(_attackComp, &UAttackComponent::EnableSecondaryHitBox);
+		_anim->OnSecondaryHitFrameEnd.BindUObject(_attackComp, &UAttackComponent::DisableSecondaryHitBox);
 	}
 
 }
@@ -62,6 +70,10 @@ void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (_movementComponent->Velocity.Length() > 0)
+		_anim->_velocityScale = (_movementComponent->Velocity.Length() / _movementComponent->MaxWalkSpeed) * 100;
+	else
+		_anim->_velocityScale = 0;
 }
 
 // Called to bind functionality to input

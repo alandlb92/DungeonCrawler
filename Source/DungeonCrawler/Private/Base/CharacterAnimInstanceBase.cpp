@@ -13,6 +13,16 @@ void UCharacterAnimInstanceBase::HitFrameEnd()
 	OnHitFrameEnd.ExecuteIfBound();
 }
 
+void UCharacterAnimInstanceBase::SecondaryHitFrameStart()
+{
+	OnSecondaryHitFrameStart.ExecuteIfBound();
+}
+
+void UCharacterAnimInstanceBase::SecondaryHitFrameEnd()
+{
+	OnSecondaryHitFrameEnd.ExecuteIfBound();
+}
+
 void UCharacterAnimInstanceBase::ChangeCharacterState(CharacterState state)
 {
 	OnChangeCharacterState.Execute(state);

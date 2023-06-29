@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ComponentVisualizer.h"
 
 /**
  * 
  */
-class DUNGEONCRAWLEREDITOR_API CharacterEnemyVisualizer
+class DUNGEONCRAWLEREDITOR_API FCharacterEnemyVisualizer : public FComponentVisualizer
 {
 public:
-	CharacterEnemyVisualizer();
-	~CharacterEnemyVisualizer();
+	void DrawVisualization(const UActorComponent* Component, const FSceneView* View, FPrimitiveDrawInterface* PDI) override;
 };

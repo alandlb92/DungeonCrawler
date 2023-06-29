@@ -21,6 +21,8 @@ public:
 	ChangeCharacterStateEvent OnChangeCharacterState;
 	HitFrameEvent OnHitFrameStart;
 	HitFrameEvent OnHitFrameEnd;
+	HitFrameEvent OnSecondaryHitFrameStart;
+	HitFrameEvent OnSecondaryHitFrameEnd;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
 	float _velocityScale;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
@@ -33,6 +35,13 @@ public:
 	void HitFrameStart();
 	UFUNCTION(BlueprintCallable)
 	void HitFrameEnd();
+
+
+	UFUNCTION(BlueprintCallable)
+	void SecondaryHitFrameStart();
+	UFUNCTION(BlueprintCallable)
+	void SecondaryHitFrameEnd();
+
 	UFUNCTION(BlueprintCallable)
 	void ChangeCharacterState(CharacterState state);
 	

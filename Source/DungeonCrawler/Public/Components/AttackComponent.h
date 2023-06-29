@@ -29,12 +29,17 @@ public:
 	void EnableHitBox();
 	void DisableHitBox();
 
+	void EnableSecondaryHitBox();
+	void DisableSecondaryHitBox();
+
 private:
 	
 	UAttributesData* _myAttributes;
 	CharacterStats* _myStats;
 
-	class UBoxComponent* _boxCollision;
+	class UBoxComponent* _boxCollision1;
+	class UBoxComponent* _boxCollision2;
+
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 

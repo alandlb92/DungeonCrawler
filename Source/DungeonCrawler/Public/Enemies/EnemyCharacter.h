@@ -5,7 +5,18 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Base/CharacterBase.h"
+#include <Player/DGPlayerState.h>
 #include "EnemyCharacter.generated.h"
+
+
+
+UENUM(BlueprintType)
+enum EnemyAIState : uint8
+{
+	EAIWAITINGFORAPPROACH UMETA(DisplayName = "WAITINGFORAPPROACH"),
+	EAICHASING UMETA(DisplayName = "CHASING"),
+	EAIATTACKING UMETA(DisplayName = "ATTACKING")
+};
 
 UCLASS()
 class DUNGEONCRAWLER_API AEnemyCharacter : public ACharacterBase
@@ -31,5 +42,12 @@ public:
 	float _distanceToStartChasing = 500;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
-	class UBehaviorTree* _behaviourTree;
+	class UBehaviorTree* _behaviourTree;	
+
+	bool _attack;
+
+	CharacterState characterState;
+
+private:
+	void ChangePlayerState(CharacterState state);
 };

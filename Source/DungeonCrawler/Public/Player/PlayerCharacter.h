@@ -49,7 +49,7 @@ private:
 	bool IsLeftMouseKeyDownAndOverEnemyToAttack;
 
 	UPROPERTY()
-	class UPlayerCharacterMovementComponent* _movementComponent;
+	class UPlayerCharacterMovementComponent* _playerMovementComponent;
 	void UpdatePlayerState();
 	void LeftMouseKeyDown();
 	void LeftMouseKeyUp();

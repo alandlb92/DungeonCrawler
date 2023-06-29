@@ -25,16 +25,37 @@ void UAttackComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	_boxCollision = GetOwner()->FindComponentByClass<UBoxComponent>();
-	if (!_boxCollision)
+	TArray<UBoxComponent*> FoundComponents;
+	GetOwner()->GetComponents<UBoxComponent>(FoundComponents);
+
+	for (auto comp : FoundComponents)
+	{
+		if (comp->ComponentHasTag("HitCollision"))
+			_boxCollision1 = comp;
+		if (comp->ComponentHasTag("SecondaryHitCollision"))
+			_boxCollision2 = comp;
+	}
+
+	if (!_boxCollision1)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UBoxComponent NOT FOUND on %s"), *GetOwner()->GetName());
 	}
 	else
 	{
-		_boxCollision->OnComponentBeginOverlap.AddDynamic(this, &UAttackComponent::OnOverlapBegin);
+		_boxCollision1->OnComponentBeginOverlap.AddDynamic(this, &UAttackComponent::OnOverlapBegin);
 		DisableHitBox();
 	}	
+
+
+	if (!_boxCollision2)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UBoxComponent NOT FOUND on %s"), *GetOwner()->GetName());
+	}
+	else
+	{
+		_boxCollision2->OnComponentBeginOverlap.AddDynamic(this, &UAttackComponent::OnOverlapBegin);
+		DisableSecondaryHitBox();
+	}
 }
 
 
@@ -46,14 +67,26 @@ void UAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UAttackComponent::EnableHitBox()
 {
-	if (_boxCollision)
-		_boxCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	if (_boxCollision1)
+		_boxCollision1->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 void UAttackComponent::DisableHitBox()
 {
-	if (_boxCollision)
-		_boxCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	if (_boxCollision1)
+		_boxCollision1->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void UAttackComponent::EnableSecondaryHitBox()
+{
+	if (_boxCollision2)
+		_boxCollision2->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+}
+
+void UAttackComponent::DisableSecondaryHitBox()
+{
+	if (_boxCollision2)
+		_boxCollision2->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 									 

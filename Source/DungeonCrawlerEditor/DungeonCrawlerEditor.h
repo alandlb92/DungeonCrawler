@@ -5,13 +5,13 @@
 #include "Modules/ModuleManager.h"
 #include "UnrealEd.h"
 
-//#include "MoveComponentVisualizer.h"
+#include "CharacterVisualizers/CharacterEnemyVisualizer.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(DungeonCrawlerEditor, All, All)
 
 class FDungeonCrawlerEditorModule : public IModuleInterface
 {
-//public:
-//    void StartupModule() override;
-//    void ShutdownModule() override;
+public:
+    void StartupModule() override;
+    void ShutdownModule() override;
 };

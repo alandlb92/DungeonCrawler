@@ -26,6 +26,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	class UCharacterMovementComponent* _movementComponent;
 
 	CharacterStats* _stats;
 	UPROPERTY()
