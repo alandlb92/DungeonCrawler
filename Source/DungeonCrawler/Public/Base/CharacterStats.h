@@ -6,6 +6,7 @@
 #include "Data/AttributesData.h"
 
 DECLARE_DELEGATE(DieEvent);
+DECLARE_DELEGATE_OneParam(NotifyPrpertieChange, float)
 
 /**
  * 
@@ -15,6 +16,7 @@ class DUNGEONCRAWLER_API CharacterStats
 public:
 	CharacterStats(UAttributesData* _atributes, DieEvent onDie);
 	void TakeDamage(UAttributesData* _atributesAttacking, UAttributesData* _atributesTaking);
+	NotifyPrpertieChange _onChangeCurrentLife;
 
 private:
 	DieEvent _onDie;

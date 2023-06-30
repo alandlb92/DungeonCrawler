@@ -8,6 +8,7 @@
 #include "Components/DamageComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Base/CharacterAnimInstanceBase.h"
+#include "Helpers/RPGCalculatorHelper.h"
 
 
 ACharacterBase::ACharacterBase()
@@ -33,6 +34,10 @@ void ACharacterBase::BeginPlay()
 	DieEvent onDie;
 	onDie.BindUObject(this, &ACharacterBase::OnDie);
 	_stats = new CharacterStats(_attributes, onDie);	
+
+	if (_movementComponent)
+		_movementComponent->MaxWalkSpeed = RPGCalculatorHelper::CalculateSpeed(_attributes);
+
 
 	_anim = Cast<UCharacterAnimInstanceBase>(GetMesh()->GetAnimInstance());
 	if (!_anim)

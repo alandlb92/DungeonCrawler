@@ -10,6 +10,7 @@
 #include "Player/DGPlayerState.h"
 #include "Helpers/MouseHelper.h"
 #include "Components/InteractableComponent.h"
+#include "Player/PlayerHUD.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -27,7 +28,7 @@ void APlayerCharacter::BeginPlay()
 	moveToMousePosition = false;
 	IsLeftMouseKeyDown = false;
 	IsSpaceBarDown = false;
-	IsLeftMouseKeyDownAndOverEnemyToAttack = false;	
+	IsLeftMouseKeyDownAndOverEnemyToAttack = false;
 
 	_playerController = GetWorld()->GetFirstPlayerController();
 	if (!_playerController)
@@ -43,7 +44,7 @@ void APlayerCharacter::BeginPlay()
 	_springArm = FindComponentByClass<USpringArmComponent>();
 	if (!_springArm)
 		UE_LOG(LogTemp, Error, TEXT("Error on searching for the USpringArmComponent"));
-	
+
 
 	_playerMovementComponent = Cast<UPlayerCharacterMovementComponent>(GetMovementComponent());
 	if (_playerMovementComponent) {
@@ -52,6 +53,14 @@ void APlayerCharacter::BeginPlay()
 	}
 	else
 		UE_LOG(LogTemp, Error, TEXT("Error on searching for the MovementComponent"));
+
+	APlayerHUD* HUD = Cast<APlayerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	if (HUD)
+	{
+		_stats->_onChangeCurrentLife.BindUObject(HUD->_widgetInstance, &UHUDWidget::UpdateHpBar);
+	}
+	else
+		UE_LOG(LogTemp, Error, TEXT("Error on searching for the PlayerHUD"));
 
 
 }
@@ -133,6 +142,8 @@ void APlayerCharacter::EnableGameplayInput()
 
 	InputComponent->BindAction("RegularAttack", IE_Pressed, this, &APlayerCharacter::SpaceBarKeyDown);
 	InputComponent->BindAction("RegularAttack", IE_Released, this, &APlayerCharacter::SpaceBarKeyUp);
+
+	InputComponent->BindAxis("MouseWheel", this, &APlayerCharacter::CameraZoomController);
 }
 
 void APlayerCharacter::LeftMouseKeyDown()
@@ -140,10 +151,10 @@ void APlayerCharacter::LeftMouseKeyDown()
 	IsLeftMouseKeyDown = true;
 	FTimerHandle UnusedHandle;
 	GetWorldTimerManager().SetTimer(UnusedHandle, [this]()
-	{
-		if (!IsLeftMouseKeyDown)
-			ClickInteraction();
-	}, .1f, false);
+		{
+			if (!IsLeftMouseKeyDown)
+				ClickInteraction();
+		}, .1f, false);
 }
 
 void APlayerCharacter::LeftMouseKeyUp()
@@ -202,6 +213,11 @@ void APlayerCharacter::WaitDistanceAndInteract()
 	}
 }
 
+void APlayerCharacter::CameraZoomController(float zoom)
+{
+	_springArm->TargetArmLength += (zoom * _zoomCameraVelocity);
+	_springArm->TargetArmLength = FMath::Clamp(_springArm->TargetArmLength, _minCameraDistance, _maxCameraDistance);
+}
 
 void APlayerCharacter::ShowMouseMovementFeedBack()
 {

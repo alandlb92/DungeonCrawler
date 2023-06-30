@@ -33,6 +33,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USpringArmComponent* _springArm;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float _zoomCameraVelocity = 10;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float _maxCameraDistance = 600;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float _minCameraDistance = 400;
+
 private:
 
 	UPROPERTY()
@@ -61,4 +70,5 @@ private:
 	void DisableMoveToMouse();
 	void ShowMouseMovementFeedBack();	
 	void WaitDistanceAndInteract();
+	void CameraZoomController(float zoom);
 };
