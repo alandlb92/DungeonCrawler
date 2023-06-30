@@ -5,6 +5,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Enemies/EnemyCharacter.h"
 #include "Enemies/AiControllerEnemyBase.h"
+#include "Player/PlayerCharacter.h"
 
 UBTTask_SearchForHero::UBTTask_SearchForHero(const FObjectInitializer& ObjectInitializer)
 {
@@ -17,6 +18,9 @@ EBTNodeResult::Type UBTTask_SearchForHero::ExecuteTask(UBehaviorTreeComponent& O
 	if (!_target)
 		_target = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("Hero"));
 
+	if(!_playerCharacter)
+		_playerCharacter = Cast<APlayerCharacter>(_target);
+
 	if (!_characterOwner) {
 
 		AAiControllerEnemyBase* aic = Cast<AAiControllerEnemyBase>(OwnerComp.GetOwner());
@@ -27,14 +31,13 @@ EBTNodeResult::Type UBTTask_SearchForHero::ExecuteTask(UBehaviorTreeComponent& O
 	}
 
 
-	if (_target)
+	if (_target && _characterOwner)
 	{
-
 		if (_characterOwner)
 		{
 			float distance = FVector::Distance(_characterOwner->GetActorLocation(), _target->GetActorLocation());
 
-			if (distance > _characterOwner->_distanceToStartChasing)
+			if (distance > _characterOwner->_distanceToStartChasing || _playerCharacter->IsDie())
 			{
 				OwnerComp.GetBlackboardComponent()->SetValueAsEnum("EnemyState", EnemyAIState::EAIWAITINGFORAPPROACH);
 			}

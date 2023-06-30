@@ -19,4 +19,5 @@ public:
 private:
 	class AEnemyCharacter* _characterOwner;
 	class AActor* _target;
+	class APlayerCharacter* _playerCharacter;
 };

@@ -6,9 +6,7 @@
 void APlayerHUD::BeginPlay()
 {
 	Super::BeginPlay();
-
-	UE_LOG(LogTemp, Warning, TEXT("APlayerHUD::BeginPlay"));
-
+	
 	if (_widget)
 	{
 		if (!_widgetInstance)
@@ -17,4 +15,6 @@ void APlayerHUD::BeginPlay()
 		if (_widgetInstance)
 			_widgetInstance->AddToViewport();
 	}
+
+
 }

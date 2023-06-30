@@ -8,6 +8,8 @@
 #include "Base/CharacterBase.h"
 #include "PlayerCharacter.generated.h"
 
+DECLARE_DELEGATE(PlayerDieEvent)
+
 UCLASS()
 class DUNGEONCRAWLER_API APlayerCharacter : public ACharacterBase
 {
@@ -20,6 +22,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void OnDie() override;
 
 public:
 
@@ -42,6 +45,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	float _minCameraDistance = 400;
 
+	PlayerDieEvent _onPlayerDie;
 private:
 
 	UPROPERTY()

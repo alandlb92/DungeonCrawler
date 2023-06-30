@@ -31,3 +31,8 @@ void CharacterStats::TakeDamage(UAttributesData* _atributesAttacking, UAttribute
 	float percentage = _currentLife / _maxLife;
 	_onChangeCurrentLife.ExecuteIfBound(percentage);
 }
+
+float CharacterStats::GetCurrentLife()
+{
+    return _currentLife;
+}

@@ -65,6 +65,12 @@ void APlayerCharacter::BeginPlay()
 
 }
 
+void APlayerCharacter::OnDie()
+{
+	Super::OnDie();
+	_onPlayerDie.ExecuteIfBound();
+}
+
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {

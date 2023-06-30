@@ -17,12 +17,6 @@ public:
 	ACharacterBase();
 	ACharacterBase(const FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float _distanceToInteract = 100;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAttributesData* _attributes;
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -47,6 +41,12 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float _distanceToInteract = 100;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAttributesData* _attributes;
+
+	bool IsDie();
 
 };

@@ -48,6 +48,8 @@ public:
 
 	CharacterState characterState;
 
+	virtual void OnDie() override;
+
 private:
 	AActor* _hero;
 

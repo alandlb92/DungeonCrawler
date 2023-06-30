@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ // Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Base/CharacterBase.h"
@@ -88,6 +88,10 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
+bool ACharacterBase::IsDie()
+{
+	return _stats->GetCurrentLife() <= 0;
+}
 
 void ACharacterBase::LookAt(AActor* toLook)
 {
@@ -99,9 +103,4 @@ void ACharacterBase::OnDie()
 {
 	_anim->_die = true;
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	FTimerHandle UnusedHandle;
-	GetWorldTimerManager().SetTimer(UnusedHandle, [this]()
-	{
-		this->Destroy();
-	}, 3, false);
 }

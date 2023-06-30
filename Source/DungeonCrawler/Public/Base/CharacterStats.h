@@ -17,6 +17,7 @@ public:
 	CharacterStats(UAttributesData* _atributes, DieEvent onDie);
 	void TakeDamage(UAttributesData* _atributesAttacking, UAttributesData* _atributesTaking);
 	NotifyPrpertieChange _onChangeCurrentLife;
+	float GetCurrentLife();
 
 private:
 	DieEvent _onDie;
