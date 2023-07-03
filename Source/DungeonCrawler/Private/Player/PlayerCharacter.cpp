@@ -152,6 +152,11 @@ void APlayerCharacter::EnableGameplayInput()
 	InputComponent->BindAxis("MouseWheel", this, &APlayerCharacter::CameraZoomController);
 }
 
+void APlayerCharacter::DisableGameplayInput()
+{
+	InputComponent->ClearActionBindings();
+}
+
 void APlayerCharacter::LeftMouseKeyDown()
 {
 	IsLeftMouseKeyDown = true;

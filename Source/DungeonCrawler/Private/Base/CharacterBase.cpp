@@ -85,7 +85,6 @@ void ACharacterBase::Tick(float DeltaTime)
 void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 bool ACharacterBase::IsDie()

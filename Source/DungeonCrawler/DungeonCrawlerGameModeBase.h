@@ -23,6 +23,8 @@ public:
 	UGameOverWidget* _gameOverWidgetInstance;
 private:
 	APlayerController* _playerController;
-
 	void GameOver();
+
+	void ContinuePlaying();
+	void Quit();
 };

@@ -33,6 +33,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void EnableGameplayInput();
+	void DisableGameplayInput();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USpringArmComponent* _springArm;
 
