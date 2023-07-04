@@ -25,6 +25,4 @@ public:
 
 	UPROPERTY(transient)
 	class UBlackboardComponent* BBC;
-
-	FBlackboard::FKey EnemyKeyId;
 };

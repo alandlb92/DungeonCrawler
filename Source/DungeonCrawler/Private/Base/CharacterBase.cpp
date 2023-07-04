@@ -94,6 +94,7 @@ bool ACharacterBase::IsDie()
 
 void ACharacterBase::LookAt(AActor* toLook)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ACharacterBase::LookAt"));
 	FRotator lookAtRotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), toLook->GetActorLocation());
 	SetActorRotation(lookAtRotator.Quaternion());
 }
@@ -101,5 +102,5 @@ void ACharacterBase::LookAt(AActor* toLook)
 void ACharacterBase::OnDie()
 {
 	_anim->_die = true;
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	
 }

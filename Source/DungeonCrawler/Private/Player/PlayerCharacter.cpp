@@ -68,6 +68,7 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::OnDie()
 {
 	Super::OnDie();
+	_state->ChangeCharacterState(CharacterState::DEAD);
 	_onPlayerDie.ExecuteIfBound();
 }
 

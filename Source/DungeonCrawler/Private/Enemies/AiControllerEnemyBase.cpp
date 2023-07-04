@@ -20,9 +20,6 @@ void AAiControllerEnemyBase::OnPossess(APawn* InPawn)
 	if (Chr && Chr->_behaviourTree)
 	{
 		BBC->InitializeBlackboard(*Chr->_behaviourTree->BlackboardAsset);
-
-		EnemyKeyId = BBC->GetKeyID("TargetActor");
-
 		BTC->StartTree(*Chr->_behaviourTree);
 	}
 }

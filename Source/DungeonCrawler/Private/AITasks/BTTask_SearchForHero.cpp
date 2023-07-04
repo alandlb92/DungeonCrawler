@@ -37,7 +37,11 @@ EBTNodeResult::Type UBTTask_SearchForHero::ExecuteTask(UBehaviorTreeComponent& O
 		{
 			float distance = FVector::Distance(_characterOwner->GetActorLocation(), _target->GetActorLocation());
 
-			if (distance > _characterOwner->_distanceToStartChasing || _playerCharacter->IsDie())
+			if (_characterOwner->IsDie())
+			{
+				OwnerComp.GetBlackboardComponent()->SetValueAsEnum("EnemyState", EnemyAIState::EAIDEAD);
+			}
+			else if (distance > _characterOwner->_distanceToStartChasing || _playerCharacter->IsDie())
 			{
 				OwnerComp.GetBlackboardComponent()->SetValueAsEnum("EnemyState", EnemyAIState::EAIWAITINGFORAPPROACH);
 			}

@@ -35,7 +35,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	if (_anim) {
 		_anim->_attack = _attack;
 
-		if(_attack && _movementComponent->Velocity.Length() > 0)
+		if (_attack && _movementComponent->Velocity.Length() > 0)
 			_movementComponent->StopMovementImmediately();
 	}
 
@@ -51,21 +51,44 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void AEnemyCharacter::OnDie()
 {
 	Super::OnDie();
-
+	ChangeCharacterState(CharacterState::DEAD);
+	_movementComponent->DisableMovement();
 	FTimerHandle UnusedHandle;
 	GetWorldTimerManager().SetTimer(UnusedHandle, [this]()
-	{
-		this->Destroy();
-	}, 3, false);
+		{
+			this->Destroy();
+		}, 3, false);
 }
 
 void AEnemyCharacter::ChangeCharacterState(CharacterState state)
 {
+	FString s = "";
+	switch (state)
+	{
+	case IDLE:
+		s = "IDLE";
+		break;
+	case WALKING:
+		s = "WALKING";
+		break;
+	case ATTACKING:
+		s = "ATTACKING";
+		break;
+	case DEAD:
+		s = "DEAD";
+		break;
+	default:
+		s = "error";
+		break;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Change State: %s"), *s);
 	characterState = state;
 }
 
 void AEnemyCharacter::AdjustRotation()
 {
-	LookAt(_hero);
+	if (characterState != DEAD)
+		LookAt(_hero);
 }
 

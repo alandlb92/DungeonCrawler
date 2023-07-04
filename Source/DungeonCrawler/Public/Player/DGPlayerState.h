@@ -13,7 +13,8 @@ enum CharacterState : uint8
 {
 	IDLE UMETA(DisplayName = "IDLE"),
 	WALKING UMETA(DisplayName = "Walking"),
-	ATTACKING UMETA(DisplayName = "Attacking")
+	ATTACKING UMETA(DisplayName = "Attacking"),
+	DEAD UMETA(DisplayName = "Dead")
 };
 
 UCLASS()
