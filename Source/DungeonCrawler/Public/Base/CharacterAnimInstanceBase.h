@@ -29,6 +29,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
 	float _velocityScale;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
+	float _attackRate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
 	bool _attack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
 	bool _die;

@@ -15,5 +15,6 @@ class DUNGEONCRAWLER_API RPGCalculatorHelper
 public:
 	static float CalculateMaxLife(UAttributesData* _attributes);
 	static float CalculateDamage(UAttributesData* _attributesAttacking, UAttributesData* _attributesTaking);
-	static float CalculateSpeed(UAttributesData* _attributes);
+	static float CalculateMovementSpeed(UAttributesData* _attributes);
+	static float CalculateAttackSpeed(UAttributesData* _attributes);
 };

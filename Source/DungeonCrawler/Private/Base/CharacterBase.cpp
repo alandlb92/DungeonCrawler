@@ -36,7 +36,7 @@ void ACharacterBase::BeginPlay()
 	_stats = new CharacterStats(_attributes, onDie);	
 
 	if (_movementComponent)
-		_movementComponent->MaxWalkSpeed = RPGCalculatorHelper::CalculateSpeed(_attributes);
+		_movementComponent->MaxWalkSpeed = RPGCalculatorHelper::CalculateMovementSpeed(_attributes);
 
 
 	_anim = Cast<UCharacterAnimInstanceBase>(GetMesh()->GetAnimInstance());
@@ -66,6 +66,8 @@ void ACharacterBase::BeginPlay()
 
 		_anim->OnSecondaryHitFrameStart.BindUObject(_attackComp, &UAttackComponent::EnableSecondaryHitBox);
 		_anim->OnSecondaryHitFrameEnd.BindUObject(_attackComp, &UAttackComponent::DisableSecondaryHitBox);
+
+		_anim->_attackRate = RPGCalculatorHelper::CalculateAttackSpeed(_attributes);
 	}
 
 }

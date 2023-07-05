@@ -24,8 +24,13 @@ float RPGCalculatorHelper::CalculateDamage(UAttributesData* _attributesAttacking
 	return FMath::Clamp(fullDamage - defenseModifier, 1, INFINITY);
 }
 
-float RPGCalculatorHelper::CalculateSpeed(UAttributesData* _attributes)
+float RPGCalculatorHelper::CalculateMovementSpeed(UAttributesData* _attributes)
 {
 	float speedBase = 50;
 	return speedBase * _attributes->Speed;
+}
+
+float RPGCalculatorHelper::CalculateAttackSpeed(UAttributesData* _attributes)
+{
+	return _attributes->Speed / 10;
 }
