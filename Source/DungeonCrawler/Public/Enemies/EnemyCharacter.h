@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Base/CharacterBase.h"
+#include "Collectables/Collectable.h"
 #include <Player/DGPlayerState.h>
 #include "EnemyCharacter.generated.h"
 
@@ -28,6 +29,7 @@ public:
 	// Sets default values for this character's properties
 	AEnemyCharacter();
 
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -38,6 +40,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	TSubclassOf<ACollectable> _healOrb;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "AI")
 	float _distanceToStartChasing = 500;

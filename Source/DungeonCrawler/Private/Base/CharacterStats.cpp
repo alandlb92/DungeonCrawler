@@ -32,6 +32,17 @@ void CharacterStats::TakeDamage(UAttributesData* _atributesAttacking, UAttribute
 	_onChangeCurrentLife.ExecuteIfBound(percentage);
 }
 
+void CharacterStats::Heal(float amount)
+{
+	_currentLife += amount;
+	if (_currentLife > _maxLife) {
+		_currentLife = _maxLife;
+	}
+
+	float percentage = _currentLife / _maxLife;
+	_onChangeCurrentLife.ExecuteIfBound(percentage);
+}
+
 float CharacterStats::GetCurrentLife()
 {
     return _currentLife;

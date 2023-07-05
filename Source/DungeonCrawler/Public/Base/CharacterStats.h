@@ -16,6 +16,7 @@ class DUNGEONCRAWLER_API CharacterStats
 public:
 	CharacterStats(UAttributesData* _atributes, DieEvent onDie);
 	void TakeDamage(UAttributesData* _atributesAttacking, UAttributesData* _atributesTaking);
+	void Heal(float amount);
 	NotifyPrpertieChange _onChangeCurrentLife;
 	float GetCurrentLife();
 

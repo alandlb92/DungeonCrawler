@@ -35,6 +35,7 @@ protected:
 	virtual void OnDie();
 
 public:	
+	CharacterStats* GetStats() const;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

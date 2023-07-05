@@ -52,6 +52,19 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void AEnemyCharacter::OnDie()
 {
 	Super::OnDie();
+
+	if (_healOrb)
+	{
+		FActorSpawnParameters SpawnInfo;
+		FTransform SpawnTransform = FTransform::Identity;
+		SpawnTransform.SetLocation(GetActorLocation() + (GetActorForwardVector() * -100));
+		GetWorld()->SpawnActor<ACollectable>(_healOrb, SpawnTransform, SpawnInfo);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("_healOrb NOT SETED"));
+	}
+
 	ChangeCharacterState(CharacterState::DEAD);
 	_movementComponent->DisableMovement();
 	FTimerHandle UnusedHandle;

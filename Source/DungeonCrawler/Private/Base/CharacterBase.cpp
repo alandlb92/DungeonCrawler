@@ -72,6 +72,12 @@ void ACharacterBase::BeginPlay()
 
 }
 
+
+CharacterStats* ACharacterBase::GetStats() const
+{
+	return _stats;
+}
+
 // Called every frame
 void ACharacterBase::Tick(float DeltaTime)
 {
