@@ -17,7 +17,9 @@ class DUNGEONCRAWLER_API AAiControllerEnemyBase : public AAIController
 public:
 	AAiControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
 
+	virtual void Tick(float DeltaTime) override;
 	virtual void OnPossess(APawn* InPawn) override;
+	virtual void BeginPlay() override;
 
 	UPROPERTY(transient)
 	class UBehaviorTreeComponent* BTC;
@@ -25,4 +27,8 @@ public:
 
 	UPROPERTY(transient)
 	class UBlackboardComponent* BBC;
+
+private:
+	class AEnemyCharacter* _characterOwner;
+	class APlayerCharacter* _playerCharacter;
 };

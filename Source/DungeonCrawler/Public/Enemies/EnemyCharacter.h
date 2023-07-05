@@ -51,6 +51,8 @@ public:
 
 	virtual void OnDie() override;
 
+	FVector _startPosition;
+
 private:
 	AActor* _hero;
 

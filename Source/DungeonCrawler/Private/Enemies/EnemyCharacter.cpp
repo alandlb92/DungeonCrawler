@@ -26,6 +26,8 @@ void AEnemyCharacter::BeginPlay()
 		_anim->OnChangeCharacterState.BindUObject(this, &AEnemyCharacter::ChangeCharacterState);
 		_anim->OnAdjustRotationBetweenAnimEvent.BindUObject(this, &AEnemyCharacter::AdjustRotation);
 	}
+
+	_startPosition = GetActorLocation();
 }
 
 // Called every frame
@@ -38,7 +40,6 @@ void AEnemyCharacter::Tick(float DeltaTime)
 		if (_attack && _movementComponent->Velocity.Length() > 0)
 			_movementComponent->StopMovementImmediately();
 	}
-
 }
 
 // Called to bind functionality to input
