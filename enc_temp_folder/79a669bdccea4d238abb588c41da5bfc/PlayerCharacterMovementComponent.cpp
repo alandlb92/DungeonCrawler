@@ -9,22 +9,6 @@
 #include "Helpers/MouseHelper.h"
 
 
-void FJoystickInput::Sanitize()
-{
-	MovementInput = RawMovementInput;
-	RawMovementInput.Set(0.0f, 0.0f);
-}
-
-void FJoystickInput::MoveX(float AxisValue)
-{
-	RawMovementInput.Y = AxisValue;
-}
-
-void FJoystickInput::MoveY(float AxisValue)
-{
-	RawMovementInput.X = AxisValue;
-}
-
 void UPlayerCharacterMovementComponent::Configure(USpringArmComponent* springArm, APlayerController* playerController)
 {
 	_springArm = springArm;
@@ -36,8 +20,8 @@ void UPlayerCharacterMovementComponent::MoveToPosition(FVector destination)
 	if (!CanMove)
 		return;
 
-	if (_playerController)
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(_playerController, destination);
+	if (_playerController)	
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(_playerController, destination);	
 	else
 		UE_LOG(LogTemp, Error, TEXT("_playerController is null"));
 }
@@ -66,41 +50,19 @@ void UPlayerCharacterMovementComponent::MoveToMouseDirection()
 	float RotatedX = inputToFixRotation.X * CosTheta - inputToFixRotation.Y * SinTheta;
 	float RotatedY = inputToFixRotation.X * SinTheta + inputToFixRotation.Y * CosTheta;
 
-	FVector2d input = FVector2d(RotatedX, RotatedY);
-	AddInput(input);
+	FVector input = FVector(RotatedX, RotatedY, 0);
+	input = _springArm->GetRelativeRotation().RotateVector(input);
+	AddInputVector(input);
 }
 
-void UPlayerCharacterMovementComponent::InputDirectionX(float inputX)
+void UPlayerCharacterMovementComponent::InputDirectionX(float zoom)
 {
-	if (!CanMove)
-		return;
-
-	_joystickInput.MoveX(inputX);
-}
-
-void UPlayerCharacterMovementComponent::InputDirectionY(float inputY)
-{
-	if (!CanMove)
-		return;
-
-	_joystickInput.MoveY(inputY);
-}
-
-void UPlayerCharacterMovementComponent::AddInput(FVector2D input)
-{
-	UE_LOG(LogTemp, Warning, TEXT("AddInput x:  %f, y %f"), input.X, input.Y);
-	FVector input3D = FVector(input.X, input.Y, 0);
-	input3D = _springArm->GetRelativeRotation().RotateVector(input3D);
-	AddInputVector(input3D);
 }
 
 
 void UPlayerCharacterMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	_joystickInput.Sanitize();
-	AddInput(_joystickInput.MovementInput * 100);
 
 	if (!CanMove && Velocity.Length() > 0) {
 		StopMovementImmediately();

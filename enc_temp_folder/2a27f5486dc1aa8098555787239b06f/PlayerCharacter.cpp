@@ -149,10 +149,6 @@ void APlayerCharacter::EnableGameplayInput()
 
 	InputComponent->BindAction("RegularAttack", IE_Pressed, this, &APlayerCharacter::SpaceBarKeyDown);
 	InputComponent->BindAction("RegularAttack", IE_Released, this, &APlayerCharacter::SpaceBarKeyUp);
-	
-	//Joystick
-	InputComponent->BindAxis("MovementY", _playerMovementComponent, &UPlayerCharacterMovementComponent::InputDirectionY);
-	InputComponent->BindAxis("MovementX", _playerMovementComponent, &UPlayerCharacterMovementComponent::InputDirectionX);
 
 	InputComponent->BindAxis("MouseWheel", this, &APlayerCharacter::CameraZoomController);
 }

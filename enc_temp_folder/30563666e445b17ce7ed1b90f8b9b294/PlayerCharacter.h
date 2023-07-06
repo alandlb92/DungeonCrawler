@@ -77,5 +77,4 @@ private:
 	void ShowMouseMovementFeedBack();	
 	void WaitDistanceAndInteract();
 	void CameraZoomController(float zoom);
-
 };
