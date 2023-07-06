@@ -8,6 +8,7 @@
 #include "Components/DamageComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Base/CharacterAnimInstanceBase.h"
+#include "Components/WidgetComponent.h"
 #include "Helpers/RPGCalculatorHelper.h"
 
 
@@ -70,6 +71,24 @@ void ACharacterBase::BeginPlay()
 		_anim->_attackRate = RPGCalculatorHelper::CalculateAttackSpeed(_attributes);
 	}
 
+	UWidgetComponent* widgetComp = GetComponentByClass<UWidgetComponent>();
+	if (widgetComp)
+	{
+
+		_inWorldHUD = Cast<UCharacterInWorldWidget>(widgetComp->GetWidget());
+		if (_inWorldHUD)
+		{
+			_stats->_onChangeHp.AddUObject(_inWorldHUD, &UCharacterInWorldWidget::UpdateHpBar);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("UCharacterInWorldWidget NOT FOUND"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UWidgetComponent NOT FOUND"));
+	}
 }
 
 

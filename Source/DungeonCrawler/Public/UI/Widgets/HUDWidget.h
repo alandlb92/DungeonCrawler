@@ -18,7 +18,7 @@ public:
 	class UProgressBar* _hpBar;
 
 	UFUNCTION()
-	void UpdateHpBar(float hpPercentage);
+	void UpdateHpBar(float hpPercentage, float value, FColor color);
 
 
 };

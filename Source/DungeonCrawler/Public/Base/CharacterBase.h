@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Base/CharacterStats.h"
+#include "UI/Widgets/InWorld/CharacterInWorldWidget.h"
 #include "CharacterBase.generated.h"
 
 UCLASS()
@@ -21,11 +22,14 @@ protected:
 	virtual void BeginPlay() override;
 
 	class UCharacterMovementComponent* _movementComponent;
-
+	
 	CharacterStats* _stats;
 	UPROPERTY()
 	class UCharacterAnimInstanceBase* _anim;
 	UPROPERTY()
+	UCharacterInWorldWidget* _inWorldHUD;
+	
+	UPROPERTY()	
 	class UDamageComponent* _damageComp;
 	UPROPERTY()
 	class UAttackComponent* _attackComp;

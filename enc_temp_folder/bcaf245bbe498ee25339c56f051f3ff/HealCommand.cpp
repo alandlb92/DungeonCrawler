@@ -2,13 +2,12 @@
 
 
 #include "Collectables/Commands/HealCommand.h"
-#include "Helpers/RPGCalculatorHelper.h"
 
 void UHealCommand::Execute()
 {
 	Super::Execute();
 	if (_player)
 	{
-		_player->GetStats()->Heal(_healPower * RPGCalculatorHelper::RollDice(4));
+		_player->GetStats()->Heal(_healPower);
 	}
 }

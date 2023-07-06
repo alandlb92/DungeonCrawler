@@ -57,7 +57,7 @@ void APlayerCharacter::BeginPlay()
 	APlayerHUD* HUD = Cast<APlayerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	if (HUD)
 	{
-		_stats->_onChangeCurrentLife.BindUObject(HUD->_widgetInstance, &UHUDWidget::UpdateHpBar);
+		_stats->_onChangeHp.AddUObject(HUD->_widgetInstance, &UHUDWidget::UpdateHpBar);
 	}
 	else
 		UE_LOG(LogTemp, Error, TEXT("Error on searching for the PlayerHUD"));

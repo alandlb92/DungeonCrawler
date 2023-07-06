@@ -4,7 +4,7 @@
 #include "UI/Widgets/HUDWidget.h"
 #include "Components/ProgressBar.h"
 
-void UHUDWidget::UpdateHpBar(float hpPercentage)
+void UHUDWidget::UpdateHpBar(float hpPercentage, float value, FColor color)
 {
 	_hpBar->SetPercent(hpPercentage);
 }

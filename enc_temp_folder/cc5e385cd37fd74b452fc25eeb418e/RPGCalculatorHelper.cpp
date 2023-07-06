@@ -15,10 +15,10 @@ float RPGCalculatorHelper::CalculateDamage(UAttributesData* _attributesAttacking
 {
 	//Add a random value to change a little the damage
 
-	float fullDamage = RollDice(8);
+	float fullDamage = RollDice(6);
 	fullDamage *= _attributesAttacking->Attack;
 
-	float defenseModifier = RollDice(4);
+	float defenseModifier = 2;
 	defenseModifier *= _attributesTaking->Defense;
 
 	return FMath::Clamp(fullDamage - defenseModifier, 1, INFINITY);

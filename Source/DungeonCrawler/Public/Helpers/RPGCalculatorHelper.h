@@ -17,4 +17,5 @@ public:
 	static float CalculateDamage(UAttributesData* _attributesAttacking, UAttributesData* _attributesTaking);
 	static float CalculateMovementSpeed(UAttributesData* _attributes);
 	static float CalculateAttackSpeed(UAttributesData* _attributes);
+	static int RollDice(int faces);
 };

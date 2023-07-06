@@ -15,6 +15,9 @@ CharacterStats::CharacterStats(UAttributesData* _attributes, DieEvent onDie)
 
 
 	_onDie = onDie;
+
+	damageTextColor = FColor::Red;
+	healTextColor = FColor::Green;
 }
 
 void CharacterStats::TakeDamage(UAttributesData* _atributesAttacking, UAttributesData* _atributesTaking)
@@ -29,7 +32,7 @@ void CharacterStats::TakeDamage(UAttributesData* _atributesAttacking, UAttribute
 
 	FMath::Clamp(_currentLife, 0, _maxLife);
 	float percentage = _currentLife / _maxLife;
-	_onChangeCurrentLife.ExecuteIfBound(percentage);
+	_onChangeHp.Broadcast(percentage, damage, damageTextColor);
 }
 
 void CharacterStats::Heal(float amount)
@@ -40,7 +43,7 @@ void CharacterStats::Heal(float amount)
 	}
 
 	float percentage = _currentLife / _maxLife;
-	_onChangeCurrentLife.ExecuteIfBound(percentage);
+	_onChangeHp.Broadcast(percentage, amount, healTextColor);
 }
 
 float CharacterStats::GetCurrentLife()

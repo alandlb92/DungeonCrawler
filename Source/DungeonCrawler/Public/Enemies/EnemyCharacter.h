@@ -59,6 +59,7 @@ public:
 	FVector _startPosition;
 
 private:
+
 	AActor* _hero;
 
 	void ChangeCharacterState(CharacterState state);

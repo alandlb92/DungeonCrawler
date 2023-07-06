@@ -28,8 +28,6 @@ void AEnemyCharacter::BeginPlay()
 
 	
 	_startPosition = GetActorLocation();
-
-	_stats->damageTextColor = FColor::Yellow;
 }
 
 // Called every frame
