@@ -13,9 +13,8 @@ UAttackComponent::UAttackComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UAttackComponent::Configure(UAttributesData* myAttributes, CharacterStats* myStats)
+void UAttackComponent::Configure(CharacterStats* myStats)
 {
-	_myAttributes = myAttributes;
 	_myStats = myStats;
 }
 
@@ -97,7 +96,7 @@ void UAttackComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 
 	UDamageComponent* damageComp = OtherActor->GetComponentByClass<UDamageComponent>();
 	if (damageComp)
-		damageComp->TakeDamage(_myAttributes);
+		damageComp->TakeDamage(_myStats);
 }
 
 

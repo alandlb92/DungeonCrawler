@@ -34,7 +34,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -42,13 +42,20 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	TSubclassOf<ACollectable> _healOrb;
+		TSubclassOf<ACollectable> _healOrb;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+		TSubclassOf<ACollectable> _boostAttackOrb;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+		TSubclassOf<ACollectable> _boostDefenseOrb;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+		TSubclassOf<ACollectable> _boostSpeedOrb;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "AI")
-	float _distanceToStartChasing = 500;
+		float _distanceToStartChasing = 500;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = "AI")
-	class UBehaviorTree* _behaviourTree;	
+		class UBehaviorTree* _behaviourTree;
 
 	bool _attack;
 
@@ -64,4 +71,8 @@ private:
 
 	void ChangeCharacterState(CharacterState state);
 	void AdjustRotation();
+
+	void DropHealOrb();
+	void DropRandomBoostOrNothing();
+	FTransform GetSpawnTransform();
 };

@@ -17,7 +17,7 @@ class DUNGEONCRAWLER_API UAttackComponent : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	UAttackComponent();
-	void Configure(UAttributesData* myAttributes, CharacterStats* myStats);
+	void Configure(CharacterStats* myStats);
 
 protected:
 	// Called when the game starts
@@ -34,7 +34,6 @@ public:
 
 private:
 	
-	UAttributesData* _myAttributes;
 	CharacterStats* _myStats;
 
 	class UBoxComponent* _boxCollision1;

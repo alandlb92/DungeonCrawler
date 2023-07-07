@@ -11,6 +11,7 @@
 #include "Helpers/MouseHelper.h"
 #include "Components/InteractableComponent.h"
 #include "Player/PlayerHUD.h"
+#include "Components/DamageComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -30,6 +31,7 @@ void APlayerCharacter::BeginPlay()
 	IsSpaceBarDown = false;
 	IsLeftMouseKeyDownAndOverEnemyToAttack = false;
 
+
 	_playerController = GetWorld()->GetFirstPlayerController();
 	if (!_playerController)
 		UE_LOG(LogTemp, Error, TEXT("Error on searching for the PlayerController"));
@@ -40,6 +42,12 @@ void APlayerCharacter::BeginPlay()
 
 	if (_anim && _state)
 		_anim->OnChangeCharacterState.BindUObject(_state, &ADGPlayerState::ChangeCharacterState);
+
+	if (_anim) {
+		_anim->OnSkillHitFrameStart.BindUObject(this, &APlayerCharacter::EnableSkillCollision);
+		_anim->OnSkillHitFrameEnd.BindUObject(this, &APlayerCharacter::DisableSkillCollision);
+	}
+
 
 	_springArm = FindComponentByClass<USpringArmComponent>();
 	if (!_springArm)
@@ -54,15 +62,18 @@ void APlayerCharacter::BeginPlay()
 	else
 		UE_LOG(LogTemp, Error, TEXT("Error on searching for the MovementComponent"));
 
-	APlayerHUD* HUD = Cast<APlayerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	HUD = Cast<APlayerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	if (HUD)
 	{
 		_stats->_onChangeHp.AddUObject(HUD->_widgetInstance, &UHUDWidget::UpdateHpBar);
+		_stats->_onNotifyTempSpeedBoostTime.AddUObject(HUD->_widgetInstance, &UHUDWidget::UpdateSpeedBoostCountDown);
+		_stats->_onNotifyTempAttackBoostTime.AddUObject(HUD->_widgetInstance, &UHUDWidget::UpdateAttackBoostCountDown);
+		_stats->_onNotifyTempDefenseBoostTime.AddUObject(HUD->_widgetInstance, &UHUDWidget::UpdateDefenseBoostCountDown);
 	}
 	else
 		UE_LOG(LogTemp, Error, TEXT("Error on searching for the PlayerHUD"));
 
-
+	GetSkillColliderReference();
 }
 
 void APlayerCharacter::OnDie()
@@ -88,6 +99,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	UpdatePlayerState();
 	MouseIsDownInteractionLoop();
 	WaitDistanceAndInteract();
+	SkillCountDown(DeltaTime);
 }
 
 void APlayerCharacter::MouseIsDownInteractionLoop()
@@ -149,7 +161,8 @@ void APlayerCharacter::EnableGameplayInput()
 
 	InputComponent->BindAction("RegularAttack", IE_Pressed, this, &APlayerCharacter::SpaceBarKeyDown);
 	InputComponent->BindAction("RegularAttack", IE_Released, this, &APlayerCharacter::SpaceBarKeyUp);
-	
+	InputComponent->BindAction("Skill1", IE_Pressed, this, &APlayerCharacter::UseSkill);
+
 	//Joystick
 	InputComponent->BindAxis("MovementY", _playerMovementComponent, &UPlayerCharacterMovementComponent::InputDirectionY);
 	InputComponent->BindAxis("MovementX", _playerMovementComponent, &UPlayerCharacterMovementComponent::InputDirectionX);
@@ -160,6 +173,33 @@ void APlayerCharacter::EnableGameplayInput()
 void APlayerCharacter::DisableGameplayInput()
 {
 	InputComponent->ClearActionBindings();
+}
+
+void APlayerCharacter::SkillCountDown(float DeltaTime)
+{
+	if (_countSkill)
+	{
+		if (_skillCounter != 0)
+		{
+			_skillCounter -= DeltaTime;
+			if (_skillCounter <= 0) {
+				_skillCounter = 0;
+				_countSkill = false;
+			}
+
+			HUD->_widgetInstance->UpdateSkillCountDown((_skillCounter / _skillTime));
+		}
+	}
+}
+
+void APlayerCharacter::UseSkill()
+{
+	if (_anim && _skillCounter == 0) {
+		_anim->_useSkill = true;
+		_skillCounter = _skillTime;
+		HUD->_widgetInstance->UpdateSkillCountDown((_skillCounter / _skillTime));
+		_countSkill = false;
+	}
 }
 
 void APlayerCharacter::LeftMouseKeyDown()
@@ -235,6 +275,43 @@ void APlayerCharacter::CameraZoomController(float zoom)
 	_springArm->TargetArmLength = FMath::Clamp(_springArm->TargetArmLength, _minCameraDistance, _maxCameraDistance);
 }
 
+void APlayerCharacter::GetSkillColliderReference()
+{
+
+	TArray<UStaticMeshComponent*> FoundComponents;
+	GetComponents<UStaticMeshComponent>(FoundComponents);
+
+	for (auto comp : FoundComponents)
+	{
+		if (comp->ComponentHasTag("SkillCollider"))
+			_skillCollider = comp;
+
+		UE_LOG(LogTemp, Error, TEXT("name: %s"), *comp->GetName());
+	}
+
+	if (!_skillCollider) {
+		UE_LOG(LogTemp, Error, TEXT("Error on searching for the UStaticMeshComponent"));
+	}
+	else {
+		DisableSkillCollision();
+		_skillCollider->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapSkillBegin);
+		HUD->_widgetInstance->UpdateSkillCountDown(0);
+	}
+}
+
+void APlayerCharacter::EnableSkillCollision()
+{
+	_skillCollider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	_skillCollider->SetVisibility(true);
+}
+
+void APlayerCharacter::DisableSkillCollision()
+{
+	_skillCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	_skillCollider->SetVisibility(false);
+	_countSkill = true;
+}
+
 void APlayerCharacter::ShowMouseMovementFeedBack()
 {
 	UE_LOG(LogTemp, Error, TEXT("TODO ShowMouseMovementFeedBack"));
@@ -242,3 +319,13 @@ void APlayerCharacter::ShowMouseMovementFeedBack()
 
 
 
+
+void APlayerCharacter::OnOverlapSkillBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (this == OtherActor)
+		return;
+
+	UDamageComponent* damageComp = OtherActor->GetComponentByClass<UDamageComponent>();
+	if (damageComp)
+		damageComp->TakeDamage(_stats, 4);
+}

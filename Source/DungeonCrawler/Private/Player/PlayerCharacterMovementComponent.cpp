@@ -88,7 +88,6 @@ void UPlayerCharacterMovementComponent::InputDirectionY(float inputY)
 
 void UPlayerCharacterMovementComponent::AddInput(FVector2D input)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AddInput x:  %f, y %f"), input.X, input.Y);
 	FVector input3D = FVector(input.X, input.Y, 0);
 	input3D = _springArm->GetRelativeRotation().RotateVector(input3D);
 	AddInputVector(input3D);
@@ -100,7 +99,7 @@ void UPlayerCharacterMovementComponent::TickComponent(float DeltaTime, ELevelTic
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	_joystickInput.Sanitize();
-	AddInput(_joystickInput.MovementInput * 100);
+	AddInput(_joystickInput.MovementInput);
 
 	if (!CanMove && Velocity.Length() > 0) {
 		StopMovementImmediately();

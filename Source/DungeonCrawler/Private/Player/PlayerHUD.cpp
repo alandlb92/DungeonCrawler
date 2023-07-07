@@ -12,8 +12,10 @@ void APlayerHUD::BeginPlay()
 		if (!_widgetInstance)
 			_widgetInstance = CreateWidget<UHUDWidget>(GetWorld(), _widget);
 
-		if (_widgetInstance)
+		if (_widgetInstance) {
 			_widgetInstance->AddToViewport();
+			_widgetInstance->Configure();
+		}
 	}
 
 

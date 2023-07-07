@@ -17,7 +17,7 @@ class DUNGEONCRAWLER_API UDamageComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UDamageComponent();
-	void Configure(UAttributesData* myAttributes, CharacterStats* myStats);
+	void Configure(CharacterStats* myStats);
 
 protected:
 	// Called when the game starts
@@ -27,10 +27,9 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void TakeDamage(UAttributesData* otherAttributes);
+	void TakeDamage(CharacterStats* otherStats, float multiplier = 1);
 
 private:
-	UAttributesData* _myAttributes;
 	CharacterStats* _myStats;
 
 };

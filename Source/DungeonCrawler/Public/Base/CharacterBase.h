@@ -37,6 +37,9 @@ protected:
 	void LookAt(AActor* toLook);
 	UFUNCTION()
 	virtual void OnDie();
+	
+	UFUNCTION()
+	virtual void SetComponentsSpeed();
 
 public:	
 	CharacterStats* GetStats() const;

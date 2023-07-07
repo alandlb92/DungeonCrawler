@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Data/AttributesData.h"
 #include "Base/CharacterBase.h"
+#include "Components/StaticMeshComponent.h"
 #include "PlayerCharacter.generated.h"
 
 DECLARE_DELEGATE(PlayerDieEvent)
@@ -38,6 +39,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USpringArmComponent* _springArm;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* _skillCollider;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	float _zoomCameraVelocity = 10;
 	
@@ -49,6 +53,16 @@ public:
 
 	PlayerDieEvent _onPlayerDie;
 private:
+	float _skillTime = 30;
+	float _skillCounter = 0;
+	bool _countSkill;
+	void SkillCountDown(float DeltaTime);
+
+	UPROPERTY()
+	class APlayerHUD* HUD;
+
+	UFUNCTION()
+	void UseSkill();
 
 	UPROPERTY()
 	class ADGPlayerState* _state;
@@ -77,5 +91,12 @@ private:
 	void ShowMouseMovementFeedBack();	
 	void WaitDistanceAndInteract();
 	void CameraZoomController(float zoom);
+	void GetSkillColliderReference();
 
+	UFUNCTION()
+	void EnableSkillCollision();
+	UFUNCTION()
+	void DisableSkillCollision();
+	UFUNCTION()
+	void OnOverlapSkillBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

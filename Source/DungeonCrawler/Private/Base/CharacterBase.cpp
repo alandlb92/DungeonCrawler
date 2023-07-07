@@ -1,4 +1,4 @@
- // Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Base/CharacterBase.h"
@@ -32,13 +32,7 @@ void ACharacterBase::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Error on searching for the MovementComponent"));
 
 
-	DieEvent onDie;
-	onDie.BindUObject(this, &ACharacterBase::OnDie);
-	_stats = new CharacterStats(_attributes, onDie);	
-
-	if (_movementComponent)
-		_movementComponent->MaxWalkSpeed = RPGCalculatorHelper::CalculateMovementSpeed(_attributes);
-
+	_stats = new CharacterStats(_attributes);
 
 	_anim = Cast<UCharacterAnimInstanceBase>(GetMesh()->GetAnimInstance());
 	if (!_anim)
@@ -50,7 +44,7 @@ void ACharacterBase::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Error on searching for the UDamageComponent"));
 	}
 	else
-		_damageComp->Configure(_attributes, _stats);
+		_damageComp->Configure(_stats);
 
 	_attackComp = FindComponentByClass<UAttackComponent>();
 	if (!_attackComp)
@@ -58,7 +52,7 @@ void ACharacterBase::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Error on searching for the UAttackComponent"));
 	}
 	else
-		_attackComp->Configure(_attributes, _stats);
+		_attackComp->Configure(_stats);
 
 	if (_attackComp && _anim)
 	{
@@ -67,8 +61,6 @@ void ACharacterBase::BeginPlay()
 
 		_anim->OnSecondaryHitFrameStart.BindUObject(_attackComp, &UAttackComponent::EnableSecondaryHitBox);
 		_anim->OnSecondaryHitFrameEnd.BindUObject(_attackComp, &UAttackComponent::DisableSecondaryHitBox);
-
-		_anim->_attackRate = RPGCalculatorHelper::CalculateAttackSpeed(_attributes);
 	}
 
 	UWidgetComponent* widgetComp = GetComponentByClass<UWidgetComponent>();
@@ -89,6 +81,13 @@ void ACharacterBase::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("UWidgetComponent NOT FOUND"));
 	}
+
+	if (_stats)
+	{
+		_stats->_onDie.AddUObject(this, &ACharacterBase::OnDie);
+		_stats->_onChangeSpeed.AddUObject(this, &ACharacterBase::SetComponentsSpeed);
+		SetComponentsSpeed();
+	}
 }
 
 
@@ -101,6 +100,8 @@ CharacterStats* ACharacterBase::GetStats() const
 void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	_stats->UpdateTimers(DeltaTime);
 
 	if (_movementComponent->Velocity.Length() > 0)
 		_anim->_velocityScale = (_movementComponent->Velocity.Length() / _movementComponent->MaxWalkSpeed) * 100;
@@ -121,7 +122,6 @@ bool ACharacterBase::IsDie()
 
 void ACharacterBase::LookAt(AActor* toLook)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ACharacterBase::LookAt"));
 	FRotator lookAtRotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), toLook->GetActorLocation());
 	SetActorRotation(lookAtRotator.Quaternion());
 }
@@ -129,5 +129,13 @@ void ACharacterBase::LookAt(AActor* toLook)
 void ACharacterBase::OnDie()
 {
 	_anim->_die = true;
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void ACharacterBase::SetComponentsSpeed()
+{
+	if (_anim)
+		_anim->_attackRate = RPGCalculatorHelper::CalculateAttackSpeed(_stats);
+	if (_movementComponent)
+		_movementComponent->MaxWalkSpeed = RPGCalculatorHelper::CalculateMovementSpeed(_stats);
 }

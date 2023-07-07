@@ -13,6 +13,16 @@ void UCharacterAnimInstanceBase::HitFrameEnd()
 	OnHitFrameEnd.ExecuteIfBound();
 }
 
+void UCharacterAnimInstanceBase::SkillHitFrameStart()
+{
+	OnSkillHitFrameStart.ExecuteIfBound();
+}
+
+void UCharacterAnimInstanceBase::SkillHitFrameEnd()
+{
+	OnSkillHitFrameEnd.ExecuteIfBound();
+}
+
 void UCharacterAnimInstanceBase::SecondaryHitFrameStart()
 {
 	OnSecondaryHitFrameStart.ExecuteIfBound();

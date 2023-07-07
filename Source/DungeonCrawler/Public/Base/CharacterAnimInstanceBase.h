@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -24,6 +23,8 @@ public:
 	HitFrameEvent OnHitFrameEnd;
 	HitFrameEvent OnSecondaryHitFrameStart;
 	HitFrameEvent OnSecondaryHitFrameEnd;
+	HitFrameEvent OnSkillHitFrameStart;
+	HitFrameEvent OnSkillHitFrameEnd;
 	AdjustRotationEvent OnAdjustRotationBetweenAnimEvent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
@@ -34,11 +35,19 @@ public:
 	bool _attack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
 	bool _die;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Animation Variables")
+	bool _useSkill;
 
 	UFUNCTION(BlueprintCallable)
 	void HitFrameStart();
 	UFUNCTION(BlueprintCallable)
 	void HitFrameEnd();
+
+
+	UFUNCTION(BlueprintCallable)
+	void SkillHitFrameStart();
+	UFUNCTION(BlueprintCallable)
+	void SkillHitFrameEnd();
 
 	UFUNCTION(BlueprintCallable)
 	void SecondaryHitFrameStart();

@@ -14,6 +14,7 @@ class DUNGEONCRAWLER_API UAttributesData : public UDataAsset
 {
 	GENERATED_BODY()
 public:
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
 	float Attack;
 

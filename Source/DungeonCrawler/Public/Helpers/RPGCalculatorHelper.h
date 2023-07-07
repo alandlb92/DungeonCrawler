@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/AttributesData.h"
+#include "Base/CharacterStats.h"
 
 /**
  * 
@@ -13,9 +14,9 @@
 class DUNGEONCRAWLER_API RPGCalculatorHelper
 {
 public:
-	static float CalculateMaxLife(UAttributesData* _attributes);
-	static float CalculateDamage(UAttributesData* _attributesAttacking, UAttributesData* _attributesTaking);
-	static float CalculateMovementSpeed(UAttributesData* _attributes);
-	static float CalculateAttackSpeed(UAttributesData* _attributes);
+	static float CalculateMaxLife(CharacterStats* _constAtrib);
+	static float CalculateDamage(CharacterStats* _attributesAttacking, CharacterStats* _attributesTaking);
+	static float CalculateMovementSpeed(CharacterStats* _attributes);
+	static float CalculateAttackSpeed(CharacterStats* _attributes);
 	static int RollDice(int faces);
 };

@@ -4,6 +4,7 @@
 #include "Enemies/EnemyCharacter.h"
 #include "Base/CharacterAnimInstanceBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Helpers/RPGCalculatorHelper.h"
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
 {
@@ -26,7 +27,7 @@ void AEnemyCharacter::BeginPlay()
 		_anim->OnAdjustRotationBetweenAnimEvent.BindUObject(this, &AEnemyCharacter::AdjustRotation);
 	}
 
-	
+
 	_startPosition = GetActorLocation();
 
 	_stats->damageTextColor = FColor::Yellow;
@@ -54,17 +55,8 @@ void AEnemyCharacter::OnDie()
 {
 	Super::OnDie();
 
-	if (_healOrb)
-	{
-		FActorSpawnParameters SpawnInfo;
-		FTransform SpawnTransform = FTransform::Identity;
-		SpawnTransform.SetLocation(GetActorLocation() + (GetActorForwardVector() * -100));
-		GetWorld()->SpawnActor<ACollectable>(_healOrb, SpawnTransform, SpawnInfo);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("_healOrb NOT SETED"));
-	}
+	DropHealOrb();
+	DropRandomBoostOrNothing();
 
 	ChangeCharacterState(CharacterState::DEAD);
 	_movementComponent->DisableMovement();
@@ -97,7 +89,6 @@ void AEnemyCharacter::ChangeCharacterState(CharacterState state)
 		break;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Change State: %s"), *s);
 	characterState = state;
 }
 
@@ -105,5 +96,62 @@ void AEnemyCharacter::AdjustRotation()
 {
 	if (characterState != DEAD)
 		LookAt(_hero);
+}
+
+void AEnemyCharacter::DropHealOrb()
+{
+	if (_healOrb)
+	{
+		FActorSpawnParameters SpawnInfo;
+		GetWorld()->SpawnActor<ACollectable>(_healOrb, GetSpawnTransform(), SpawnInfo);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("_healOrb NOT SETED"));
+	}
+}
+
+void AEnemyCharacter::DropRandomBoostOrNothing()
+{
+	if (RPGCalculatorHelper::RollDice(20) > 8)
+	{
+		FActorSpawnParameters SpawnInfo;
+
+		switch (RPGCalculatorHelper::RollDice(3))
+		{
+			case 1:
+				if (_boostAttackOrb)
+					GetWorld()->SpawnActor<ACollectable>(_boostAttackOrb, GetSpawnTransform(), SpawnInfo);
+				else
+					UE_LOG(LogTemp, Error, TEXT("_boostAttackOrb NOT SETED"));
+				break;
+			case 2:
+				if (_boostDefenseOrb)
+					GetWorld()->SpawnActor<ACollectable>(_boostDefenseOrb, GetSpawnTransform(), SpawnInfo);
+				else
+					UE_LOG(LogTemp, Error, TEXT("_boostDefenseOrb NOT SETED"));
+				break;
+			default:
+				if (_boostSpeedOrb)
+					GetWorld()->SpawnActor<ACollectable>(_boostSpeedOrb, GetSpawnTransform(), SpawnInfo);
+				else
+					UE_LOG(LogTemp, Error, TEXT("_boostSpeedOrb NOT SETED"));
+				break;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DropNothing"));
+	}
+}
+
+FTransform AEnemyCharacter::GetSpawnTransform()
+{
+	FTransform SpawnTransform = FTransform::Identity;
+	FVector location = GetActorLocation() + (GetActorForwardVector() * -100);
+	location.X += (FMath::RandRange(-5, 5) * 10);
+	location.Y += (FMath::RandRange(-5, 5) * 10);
+	SpawnTransform.SetLocation(location);
+	return SpawnTransform;
 }
 

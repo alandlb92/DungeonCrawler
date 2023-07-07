@@ -4,35 +4,35 @@
 #include "Helpers/RPGCalculatorHelper.h"
 //#include "Math/UnrealMathUtility.h"
 
-float RPGCalculatorHelper::CalculateMaxLife(UAttributesData* _attributes)
+float RPGCalculatorHelper::CalculateMaxLife(CharacterStats* _stats)
 {
 	float result = 10;
-	result *= _attributes->Constitution;
+	result *= _stats->GetCurrentConst();
 	return result;
 }
 
-float RPGCalculatorHelper::CalculateDamage(UAttributesData* _attributesAttacking, UAttributesData* _attributesTaking)
+float RPGCalculatorHelper::CalculateDamage(CharacterStats* _attributesAttacking, CharacterStats* _attributesTaking)
 {
 	//Add a random value to change a little the damage
 
 	float fullDamage = RollDice(8);
-	fullDamage *= _attributesAttacking->Attack;
+	fullDamage *= _attributesAttacking->GetCurrentAttack();
 
 	float defenseModifier = RollDice(4);
-	defenseModifier *= _attributesTaking->Defense;
+	defenseModifier *= _attributesTaking->GetCurrentDefense();
 
 	return FMath::Clamp(fullDamage - defenseModifier, 1, INFINITY);
 }
 
-float RPGCalculatorHelper::CalculateMovementSpeed(UAttributesData* _attributes)
+float RPGCalculatorHelper::CalculateMovementSpeed(CharacterStats* _attributes)
 {
 	float speedBase = 50;
-	return speedBase * _attributes->Speed;
+	return speedBase * _attributes->GetCurrentSpeed();
 }
 
-float RPGCalculatorHelper::CalculateAttackSpeed(UAttributesData* _attributes)
+float RPGCalculatorHelper::CalculateAttackSpeed(CharacterStats* _attributes)
 {
-	return _attributes->Speed / 10;
+	return _attributes->GetCurrentSpeed() / 10;
 }
 
 int RPGCalculatorHelper::RollDice(int faces)

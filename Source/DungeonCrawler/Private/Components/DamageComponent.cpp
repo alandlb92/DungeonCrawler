@@ -13,9 +13,8 @@ UDamageComponent::UDamageComponent()
 	// ...
 }
 
-void UDamageComponent::Configure(UAttributesData* myAttributes, CharacterStats* myStats)
+void UDamageComponent::Configure(CharacterStats* myStats)
 {
-	_myAttributes = myAttributes;
 	_myStats = myStats;
 }
 
@@ -33,8 +32,8 @@ void UDamageComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UDamageComponent::TakeDamage(UAttributesData* otherAttributes)
+void UDamageComponent::TakeDamage(CharacterStats* otherStats, float multiplier)
 {
-	_myStats->TakeDamage(otherAttributes, _myAttributes);
+	_myStats->TakeDamage(otherStats, multiplier);
 }
 
